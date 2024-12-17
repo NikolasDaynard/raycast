@@ -39,8 +39,8 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-epjuRj"
-      binary: "/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-epjuRj"
+      source: "/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-YY7KsO"
+      binary: "/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-YY7KsO"
     cmakeVariables:
       CMAKE_C_FLAGS: ""
       CMAKE_C_FLAGS_DEBUG: "-g"
@@ -49,10 +49,13 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: '/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-epjuRj'
+        Change Dir: '/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-YY7KsO'
         
-        Run Build Command(s): /nix/store/s2lws03pga0vyq84kfa6h041n8csbg4p-ninja-1.12.1/bin/ninja -v cmTC_5770f
-        [1/2] /run/current-system/sw/bin/clang   -v -MD -MT CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o -MF CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o.d -o CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o -c /nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/share/cmake-3.30/Modules/CMakeCCompilerABI.c
+        Run Build Command(s): /nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/bin/cmake -E env VERBOSE=1 /nix/store/9y5kd90fdbrq3r4yc9mpqn82f93zdgyq-gnumake-4.4.1/bin/make -f Makefile cmTC_80d73/fast
+        /nix/store/9y5kd90fdbrq3r4yc9mpqn82f93zdgyq-gnumake-4.4.1/bin/make  -f CMakeFiles/cmTC_80d73.dir/build.make CMakeFiles/cmTC_80d73.dir/build
+        make[1]: Entering directory '/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-YY7KsO'
+        Building C object CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o
+        /run/current-system/sw/bin/clang   -v -MD -MT CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o -MF CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o.d -o CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o -c /nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/share/cmake-3.30/Modules/CMakeCCompilerABI.c
         clang version 18.1.8
         Target: x86_64-unknown-linux-gnu
         Thread model: posix
@@ -63,7 +66,7 @@ events:
         Candidate multilib: .;@m64
         Selected multilib: .;@m64
          (in-process)
-         "/nix/store/im1yhwr0p1j7r5mi47cyn4sq3wmhzkzf-clang-18.1.8/bin/clang-18" -cc1 -triple x86_64-unknown-linux-gnu -emit-obj -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -fhalf-no-semantic-interposition -mframe-pointer=none -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -tune-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-epjuRj -v -fcoverage-compilation-dir=/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-epjuRj -nostdsysteminc -resource-dir /nix/store/03bq5hc45d5wkw8pajmz4vgd5s0ivyq8-clang-wrapper-18.1.8/resource-root -dependency-file CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o.d -MT CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o -sys-header-deps -idirafter /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include -idirafter /usr/include -U _FORTIFY_SOURCE -U _FORTIFY_SOURCE -D _FORTIFY_SOURCE=2 -internal-isystem /nix/store/03bq5hc45d5wkw8pajmz4vgd5s0ivyq8-clang-wrapper-18.1.8/resource-root/include -source-date-epoch 315532800 -O2 -Wformat -Wformat-security -Werror=format-security -ferror-limit 19 -fzero-call-used-regs=used-gpr -fwrapv -stack-protector 2 -stack-protector-buffer-size 4 -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -vectorize-loops -vectorize-slp -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o -x c /nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/share/cmake-3.30/Modules/CMakeCCompilerABI.c
+         "/nix/store/im1yhwr0p1j7r5mi47cyn4sq3wmhzkzf-clang-18.1.8/bin/clang-18" -cc1 -triple x86_64-unknown-linux-gnu -emit-obj -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -fhalf-no-semantic-interposition -mframe-pointer=none -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -tune-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-YY7KsO -v -fcoverage-compilation-dir=/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-YY7KsO -nostdsysteminc -resource-dir /nix/store/03bq5hc45d5wkw8pajmz4vgd5s0ivyq8-clang-wrapper-18.1.8/resource-root -dependency-file CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o.d -MT CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o -sys-header-deps -idirafter /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include -idirafter /usr/include -U _FORTIFY_SOURCE -U _FORTIFY_SOURCE -D _FORTIFY_SOURCE=2 -internal-isystem /nix/store/03bq5hc45d5wkw8pajmz4vgd5s0ivyq8-clang-wrapper-18.1.8/resource-root/include -source-date-epoch 315532800 -O2 -Wformat -Wformat-security -Werror=format-security -ferror-limit 19 -fzero-call-used-regs=used-gpr -fwrapv -stack-protector 2 -stack-protector-buffer-size 4 -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -vectorize-loops -vectorize-slp -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o -x c /nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/share/cmake-3.30/Modules/CMakeCCompilerABI.c
         clang -cc1 version 18.1.8 based upon LLVM 18.1.8 default target x86_64-unknown-linux-gnu
         #include "..." search starts here:
         #include <...> search starts here:
@@ -71,7 +74,9 @@ events:
          /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include
          /usr/include
         End of search list.
-        [2/2] : && /run/current-system/sw/bin/clang  -v -Wl,-v CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o -o cmTC_5770f   && :
+        Linking C executable cmTC_80d73
+        /nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/bin/cmake -E cmake_link_script CMakeFiles/cmTC_80d73.dir/link.txt --verbose=1
+        /run/current-system/sw/bin/clang  -v -Wl,-v CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o -o cmTC_80d73
         clang version 18.1.8
         Target: x86_64-unknown-linux-gnu
         Thread model: posix
@@ -81,8 +86,9 @@ events:
         Selected GCC installation: /nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib64/gcc/x86_64-unknown-linux-gnu/13.3.0
         Candidate multilib: .;@m64
         Selected multilib: .;@m64
-         "/nix/store/yf25jkzfc4cl2hf02cv0vz93yd5z2xq0-binutils-wrapper-2.43.1/bin/ld" --hash-style=gnu --eh-frame-hdr -m elf_x86_64 -pie -o cmTC_5770f /nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/Scrt1.o /nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/crti.o /nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib/gcc/x86_64-unknown-linux-gnu/13.3.0/crtbeginS.o -L/usr/lib -L/usr/lib32 -L/usr/lib -L/usr/lib32 -L/nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib/gcc/x86_64-unknown-linux-gnu/13.3.0 -L/nix/store/ybjcla5bhj8g1y84998pn4a2drfxybkv-gcc-13.3.0-lib/lib -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0//lib -L/nix/store/j8rzqx7farv0w3isp9z943zy437zk02f-gcc-13.3.0-libgcc/lib -L/nix/store/2j35g928qczhj13kfi7yxm09wg2jiv14-clang-18.1.8-lib/lib -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib64/gcc/x86_64-unknown-linux-gnu/13.3.0 -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib64/gcc/x86_64-unknown-linux-gnu/13.3.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/lib -L/usr/lib -dynamic-linker=/nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/ld-linux-x86-64.so.2 -v CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib/gcc/x86_64-unknown-linux-gnu/13.3.0/crtendS.o /nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/crtn.o
+         "/nix/store/yf25jkzfc4cl2hf02cv0vz93yd5z2xq0-binutils-wrapper-2.43.1/bin/ld" --hash-style=gnu --eh-frame-hdr -m elf_x86_64 -pie -o cmTC_80d73 /nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/Scrt1.o /nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/crti.o /nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib/gcc/x86_64-unknown-linux-gnu/13.3.0/crtbeginS.o -L/usr/lib -L/usr/lib32 -L/usr/lib -L/usr/lib32 -L/nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib/gcc/x86_64-unknown-linux-gnu/13.3.0 -L/nix/store/ybjcla5bhj8g1y84998pn4a2drfxybkv-gcc-13.3.0-lib/lib -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0//lib -L/nix/store/j8rzqx7farv0w3isp9z943zy437zk02f-gcc-13.3.0-libgcc/lib -L/nix/store/2j35g928qczhj13kfi7yxm09wg2jiv14-clang-18.1.8-lib/lib -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib64/gcc/x86_64-unknown-linux-gnu/13.3.0 -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib64/gcc/x86_64-unknown-linux-gnu/13.3.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/lib -L/usr/lib -dynamic-linker=/nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/ld-linux-x86-64.so.2 -v CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib/gcc/x86_64-unknown-linux-gnu/13.3.0/crtendS.o /nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/crtn.o
         GNU ld (GNU Binutils) 2.43.1
+        make[1]: Leaving directory '/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-YY7KsO'
         
       exitCode: 0
   -
@@ -115,10 +121,13 @@ events:
       Parsed C implicit link information:
         link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
         linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?))("|,| |$)]
-        ignore line: [Change Dir: '/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-epjuRj']
+        ignore line: [Change Dir: '/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-YY7KsO']
         ignore line: []
-        ignore line: [Run Build Command(s): /nix/store/s2lws03pga0vyq84kfa6h041n8csbg4p-ninja-1.12.1/bin/ninja -v cmTC_5770f]
-        ignore line: [[1/2] /run/current-system/sw/bin/clang   -v -MD -MT CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o -MF CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o.d -o CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o -c /nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/share/cmake-3.30/Modules/CMakeCCompilerABI.c]
+        ignore line: [Run Build Command(s): /nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/bin/cmake -E env VERBOSE=1 /nix/store/9y5kd90fdbrq3r4yc9mpqn82f93zdgyq-gnumake-4.4.1/bin/make -f Makefile cmTC_80d73/fast]
+        ignore line: [/nix/store/9y5kd90fdbrq3r4yc9mpqn82f93zdgyq-gnumake-4.4.1/bin/make  -f CMakeFiles/cmTC_80d73.dir/build.make CMakeFiles/cmTC_80d73.dir/build]
+        ignore line: [make[1]: Entering directory '/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-YY7KsO']
+        ignore line: [Building C object CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o]
+        ignore line: [/run/current-system/sw/bin/clang   -v -MD -MT CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o -MF CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o.d -o CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o -c /nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/share/cmake-3.30/Modules/CMakeCCompilerABI.c]
         ignore line: [clang version 18.1.8]
         ignore line: [Target: x86_64-unknown-linux-gnu]
         ignore line: [Thread model: posix]
@@ -131,7 +140,7 @@ events:
         ignore line: [Selected multilib: .]
         ignore line: [@m64]
         ignore line: [ (in-process)]
-        ignore line: [ "/nix/store/im1yhwr0p1j7r5mi47cyn4sq3wmhzkzf-clang-18.1.8/bin/clang-18" -cc1 -triple x86_64-unknown-linux-gnu -emit-obj -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -fhalf-no-semantic-interposition -mframe-pointer=none -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -tune-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-epjuRj -v -fcoverage-compilation-dir=/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-epjuRj -nostdsysteminc -resource-dir /nix/store/03bq5hc45d5wkw8pajmz4vgd5s0ivyq8-clang-wrapper-18.1.8/resource-root -dependency-file CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o.d -MT CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o -sys-header-deps -idirafter /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include -idirafter /usr/include -U _FORTIFY_SOURCE -U _FORTIFY_SOURCE -D _FORTIFY_SOURCE=2 -internal-isystem /nix/store/03bq5hc45d5wkw8pajmz4vgd5s0ivyq8-clang-wrapper-18.1.8/resource-root/include -source-date-epoch 315532800 -O2 -Wformat -Wformat-security -Werror=format-security -ferror-limit 19 -fzero-call-used-regs=used-gpr -fwrapv -stack-protector 2 -stack-protector-buffer-size 4 -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -vectorize-loops -vectorize-slp -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o -x c /nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/share/cmake-3.30/Modules/CMakeCCompilerABI.c]
+        ignore line: [ "/nix/store/im1yhwr0p1j7r5mi47cyn4sq3wmhzkzf-clang-18.1.8/bin/clang-18" -cc1 -triple x86_64-unknown-linux-gnu -emit-obj -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCCompilerABI.c -mrelocation-model pic -pic-level 2 -fhalf-no-semantic-interposition -mframe-pointer=none -fmath-errno -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -tune-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-YY7KsO -v -fcoverage-compilation-dir=/home/nikolasd/dev/c/raycast/build/CMakeFiles/CMakeScratch/TryCompile-YY7KsO -nostdsysteminc -resource-dir /nix/store/03bq5hc45d5wkw8pajmz4vgd5s0ivyq8-clang-wrapper-18.1.8/resource-root -dependency-file CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o.d -MT CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o -sys-header-deps -idirafter /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include -idirafter /usr/include -U _FORTIFY_SOURCE -U _FORTIFY_SOURCE -D _FORTIFY_SOURCE=2 -internal-isystem /nix/store/03bq5hc45d5wkw8pajmz4vgd5s0ivyq8-clang-wrapper-18.1.8/resource-root/include -source-date-epoch 315532800 -O2 -Wformat -Wformat-security -Werror=format-security -ferror-limit 19 -fzero-call-used-regs=used-gpr -fwrapv -stack-protector 2 -stack-protector-buffer-size 4 -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -vectorize-loops -vectorize-slp -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o -x c /nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/share/cmake-3.30/Modules/CMakeCCompilerABI.c]
         ignore line: [clang -cc1 version 18.1.8 based upon LLVM 18.1.8 default target x86_64-unknown-linux-gnu]
         ignore line: [#include "..." search starts here:]
         ignore line: [#include <...> search starts here:]
@@ -139,7 +148,9 @@ events:
         ignore line: [ /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include]
         ignore line: [ /usr/include]
         ignore line: [End of search list.]
-        ignore line: [[2/2] : && /run/current-system/sw/bin/clang  -v -Wl -v CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o -o cmTC_5770f   && :]
+        ignore line: [Linking C executable cmTC_80d73]
+        ignore line: [/nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/bin/cmake -E cmake_link_script CMakeFiles/cmTC_80d73.dir/link.txt --verbose=1]
+        ignore line: [/run/current-system/sw/bin/clang  -v -Wl -v CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o -o cmTC_80d73]
         ignore line: [clang version 18.1.8]
         ignore line: [Target: x86_64-unknown-linux-gnu]
         ignore line: [Thread model: posix]
@@ -151,7 +162,7 @@ events:
         ignore line: [@m64]
         ignore line: [Selected multilib: .]
         ignore line: [@m64]
-        link line: [ "/nix/store/yf25jkzfc4cl2hf02cv0vz93yd5z2xq0-binutils-wrapper-2.43.1/bin/ld" --hash-style=gnu --eh-frame-hdr -m elf_x86_64 -pie -o cmTC_5770f /nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/Scrt1.o /nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/crti.o /nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib/gcc/x86_64-unknown-linux-gnu/13.3.0/crtbeginS.o -L/usr/lib -L/usr/lib32 -L/usr/lib -L/usr/lib32 -L/nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib/gcc/x86_64-unknown-linux-gnu/13.3.0 -L/nix/store/ybjcla5bhj8g1y84998pn4a2drfxybkv-gcc-13.3.0-lib/lib -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0//lib -L/nix/store/j8rzqx7farv0w3isp9z943zy437zk02f-gcc-13.3.0-libgcc/lib -L/nix/store/2j35g928qczhj13kfi7yxm09wg2jiv14-clang-18.1.8-lib/lib -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib64/gcc/x86_64-unknown-linux-gnu/13.3.0 -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib64/gcc/x86_64-unknown-linux-gnu/13.3.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/lib -L/usr/lib -dynamic-linker=/nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/ld-linux-x86-64.so.2 -v CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib/gcc/x86_64-unknown-linux-gnu/13.3.0/crtendS.o /nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/crtn.o]
+        link line: [ "/nix/store/yf25jkzfc4cl2hf02cv0vz93yd5z2xq0-binutils-wrapper-2.43.1/bin/ld" --hash-style=gnu --eh-frame-hdr -m elf_x86_64 -pie -o cmTC_80d73 /nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/Scrt1.o /nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/crti.o /nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib/gcc/x86_64-unknown-linux-gnu/13.3.0/crtbeginS.o -L/usr/lib -L/usr/lib32 -L/usr/lib -L/usr/lib32 -L/nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib/gcc/x86_64-unknown-linux-gnu/13.3.0 -L/nix/store/ybjcla5bhj8g1y84998pn4a2drfxybkv-gcc-13.3.0-lib/lib -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0//lib -L/nix/store/j8rzqx7farv0w3isp9z943zy437zk02f-gcc-13.3.0-libgcc/lib -L/nix/store/2j35g928qczhj13kfi7yxm09wg2jiv14-clang-18.1.8-lib/lib -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib64/gcc/x86_64-unknown-linux-gnu/13.3.0 -L/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib64/gcc/x86_64-unknown-linux-gnu/13.3.0/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/lib -L/usr/lib -dynamic-linker=/nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/ld-linux-x86-64.so.2 -v CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib/gcc/x86_64-unknown-linux-gnu/13.3.0/crtendS.o /nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/crtn.o]
           arg [/nix/store/yf25jkzfc4cl2hf02cv0vz93yd5z2xq0-binutils-wrapper-2.43.1/bin/ld] ==> ignore
           arg [--hash-style=gnu] ==> ignore
           arg [--eh-frame-hdr] ==> ignore
@@ -159,7 +170,7 @@ events:
           arg [elf_x86_64] ==> ignore
           arg [-pie] ==> ignore
           arg [-o] ==> ignore
-          arg [cmTC_5770f] ==> ignore
+          arg [cmTC_80d73] ==> ignore
           arg [/nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/Scrt1.o] ==> obj [/nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/Scrt1.o]
           arg [/nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/crti.o] ==> obj [/nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/crti.o]
           arg [/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib/gcc/x86_64-unknown-linux-gnu/13.3.0/crtbeginS.o] ==> obj [/nix/store/4krab2h0hd4wvxxmscxrw21pl77j4i7j-gcc-13.3.0/lib/gcc/x86_64-unknown-linux-gnu/13.3.0/crtbeginS.o]
@@ -181,7 +192,7 @@ events:
           arg [-L/usr/lib] ==> dir [/usr/lib]
           arg [-dynamic-linker=/nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/ld-linux-x86-64.so.2] ==> ignore
           arg [-v] ==> ignore
-          arg [CMakeFiles/cmTC_5770f.dir/CMakeCCompilerABI.c.o] ==> ignore
+          arg [CMakeFiles/cmTC_80d73.dir/CMakeCCompilerABI.c.o] ==> ignore
           arg [-lgcc] ==> lib [gcc]
           arg [--as-needed] ==> ignore
           arg [-lgcc_s] ==> lib [gcc_s]

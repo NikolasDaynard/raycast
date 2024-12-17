@@ -26,6 +26,9 @@ CMAKE_AR:FILEPATH=/run/current-system/sw/bin/ar
 //No help, variable specified on the command line.
 CMAKE_BUILD_TYPE:STRING=Debug
 
+//Enable/Disable color output during build.
+CMAKE_COLOR_MAKEFILE:BOOL=ON
+
 //No help, variable specified on the command line.
 CMAKE_CXX_COMPILER:FILEPATH=/run/current-system/sw/bin/clang++
 
@@ -86,8 +89,8 @@ CMAKE_INSTALL_PREFIX:PATH=/var/empty/local
 //Path to a program.
 CMAKE_LINKER:FILEPATH=/run/current-system/sw/bin/ld
 
-//Program used to build from build.ninja files.
-CMAKE_MAKE_PROGRAM:FILEPATH=/nix/store/s2lws03pga0vyq84kfa6h041n8csbg4p-ninja-1.12.1/bin/ninja
+//Path to a program.
+CMAKE_MAKE_PROGRAM:FILEPATH=/nix/store/9y5kd90fdbrq3r4yc9mpqn82f93zdgyq-gnumake-4.4.1/bin/make
 
 //Flags used by the linker during the creation of modules during
 // all build types.
@@ -271,6 +274,9 @@ CTEST_SUBMIT_RETRY_DELAY:STRING=5
 //Maximum time allowed before CTest will kill the test.
 DART_TESTING_TIMEOUT:STRING=1500
 
+//Path to a program.
+GITCOMMAND:FILEPATH=/run/current-system/sw/bin/git
+
 //Command to build the project
 MAKECOMMAND:STRING=/nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/bin/cmake --build . --config "${CTEST_CONFIGURATION_TYPE}"
 
@@ -312,6 +318,8 @@ CMAKE_CACHE_MAJOR_VERSION:INTERNAL=3
 CMAKE_CACHE_MINOR_VERSION:INTERNAL=30
 //Patch version of cmake used to create the current loaded cache
 CMAKE_CACHE_PATCH_VERSION:INTERNAL=5
+//ADVANCED property for variable: CMAKE_COLOR_MAKEFILE
+CMAKE_COLOR_MAKEFILE-ADVANCED:INTERNAL=1
 //Path to CMake executable.
 CMAKE_COMMAND:INTERNAL=/nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/bin/cmake
 //Path to cpack program executable.
@@ -355,7 +363,7 @@ CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //Name of external makefile project generator.
 CMAKE_EXTRA_GENERATOR:INTERNAL=
 //Name of generator.
-CMAKE_GENERATOR:INTERNAL=Ninja
+CMAKE_GENERATOR:INTERNAL=Unix Makefiles
 //Generator instance identifier.
 CMAKE_GENERATOR_INSTANCE:INTERNAL=
 //Name of generator platform.
@@ -471,6 +479,8 @@ CTEST_SUBMIT_RETRY_COUNT-ADVANCED:INTERNAL=1
 CTEST_SUBMIT_RETRY_DELAY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: DART_TESTING_TIMEOUT
 DART_TESTING_TIMEOUT-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: GITCOMMAND
+GITCOMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MAKECOMMAND
 MAKECOMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MEMORYCHECK_COMMAND

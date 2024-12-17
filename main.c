@@ -23,9 +23,8 @@ static int texture_height = 0;
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
     SDL_Surface *surface = NULL;
-    char *bmp_path = NULL;
 
-    SDL_SetAppMetadata("Example Renderer Geometry", "1.0", "com.example.renderer-geometry");
+    SDL_SetAppMetadata("Simple Radience Cascade Renderer", "0.0.1", "com.example.renderer-geometry");
 
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
@@ -36,32 +35,6 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
-
-    /* Textures are pixel data that we upload to the video hardware for fast drawing. Lots of 2D
-       engines refer to these as "sprites." We'll do a static texture (upload once, draw many
-       times) with data from a bitmap file. */
-
-    /* SDL_Surface is pixel data the CPU can access. SDL_Texture is pixel data the GPU can access.
-       Load a .bmp into a surface, move it to a texture from there. */
-    SDL_asprintf(&bmp_path, "%ssample.bmp", SDL_GetBasePath());  /* allocate a string of the full file path */
-    surface = SDL_LoadBMP(bmp_path);
-    if (!surface) {
-        SDL_Log("Couldn't load bitmap: %s", SDL_GetError());
-        return SDL_APP_FAILURE;
-    }
-
-    SDL_free(bmp_path);  /* done with this, the file is loaded. */
-
-    texture_width = surface->w;
-    texture_height = surface->h;
-
-    texture = SDL_CreateTextureFromSurface(renderer, surface);
-    if (!texture) {
-        SDL_Log("Couldn't create static texture: %s", SDL_GetError());
-        return SDL_APP_FAILURE;
-    }
-
-    SDL_DestroySurface(surface);  /* done with this, the texture has a copy of the pixels now. */
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }

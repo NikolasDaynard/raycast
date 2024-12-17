@@ -1,0 +1,1 @@
+/run/current-system/sw/bin/clang -g CMakeFiles/raycast.dir/main.c.o -o raycast  -Wl,-rpath,/nix/store/blz0s4hw10h46dcvik27qfn79xfzran6-sdl3-3.1.6-lib/lib /nix/store/blz0s4hw10h46dcvik27qfn79xfzran6-sdl3-3.1.6-lib/lib/libSDL3.so.0.1.6

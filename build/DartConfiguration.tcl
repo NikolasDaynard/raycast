@@ -45,7 +45,7 @@ SVNOptions:
 SVNUpdateOptions: 
 
 # Git options
-GITCommand: 
+GITCommand: /run/current-system/sw/bin/git
 GITInitSubmodules: 
 GITUpdateOptions: 
 GITUpdateCustom: 
@@ -58,9 +58,9 @@ P4UpdateOptions:
 P4UpdateCustom: 
 
 # Generic update command
-UpdateCommand: 
+UpdateCommand: /run/current-system/sw/bin/git
 UpdateOptions: 
-UpdateType: 
+UpdateType: git
 
 # Compiler info
 Compiler: /run/current-system/sw/bin/clang++
