@@ -32,8 +32,8 @@ CMAKE_COLOR_MAKEFILE:BOOL=ON
 //No help, variable specified on the command line.
 CMAKE_CXX_COMPILER:FILEPATH=/run/current-system/sw/bin/clang++
 
-//C compiler
-CMAKE_C_COMPILER:STRING=/run/current-system/sw/bin/clang
+//No help, variable specified on the command line.
+CMAKE_C_COMPILER:FILEPATH=/run/current-system/sw/bin/clang
 
 //LLVM archiver
 CMAKE_C_COMPILER_AR:FILEPATH=CMAKE_C_COMPILER_AR-NOTFOUND

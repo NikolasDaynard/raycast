@@ -69,28 +69,28 @@ include CMakeFiles/raycast.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/raycast.dir/flags.make
 
-CMakeFiles/raycast.dir/main.c.o: CMakeFiles/raycast.dir/flags.make
-CMakeFiles/raycast.dir/main.c.o: /home/nikolasd/dev/c/raycast/main.c
-CMakeFiles/raycast.dir/main.c.o: CMakeFiles/raycast.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/nikolasd/dev/c/raycast/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/raycast.dir/main.c.o"
-	/run/current-system/sw/bin/clang $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/raycast.dir/main.c.o -MF CMakeFiles/raycast.dir/main.c.o.d -o CMakeFiles/raycast.dir/main.c.o -c /home/nikolasd/dev/c/raycast/main.c
+CMakeFiles/raycast.dir/src/main.c.o: CMakeFiles/raycast.dir/flags.make
+CMakeFiles/raycast.dir/src/main.c.o: /home/nikolasd/dev/c/raycast/src/main.c
+CMakeFiles/raycast.dir/src/main.c.o: CMakeFiles/raycast.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/nikolasd/dev/c/raycast/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/raycast.dir/src/main.c.o"
+	/run/current-system/sw/bin/clang $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/raycast.dir/src/main.c.o -MF CMakeFiles/raycast.dir/src/main.c.o.d -o CMakeFiles/raycast.dir/src/main.c.o -c /home/nikolasd/dev/c/raycast/src/main.c
 
-CMakeFiles/raycast.dir/main.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/raycast.dir/main.c.i"
-	/run/current-system/sw/bin/clang $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/nikolasd/dev/c/raycast/main.c > CMakeFiles/raycast.dir/main.c.i
+CMakeFiles/raycast.dir/src/main.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/raycast.dir/src/main.c.i"
+	/run/current-system/sw/bin/clang $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/nikolasd/dev/c/raycast/src/main.c > CMakeFiles/raycast.dir/src/main.c.i
 
-CMakeFiles/raycast.dir/main.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/raycast.dir/main.c.s"
-	/run/current-system/sw/bin/clang $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/nikolasd/dev/c/raycast/main.c -o CMakeFiles/raycast.dir/main.c.s
+CMakeFiles/raycast.dir/src/main.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/raycast.dir/src/main.c.s"
+	/run/current-system/sw/bin/clang $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/nikolasd/dev/c/raycast/src/main.c -o CMakeFiles/raycast.dir/src/main.c.s
 
 # Object files for target raycast
 raycast_OBJECTS = \
-"CMakeFiles/raycast.dir/main.c.o"
+"CMakeFiles/raycast.dir/src/main.c.o"
 
 # External object files for target raycast
 raycast_EXTERNAL_OBJECTS =
 
-raycast: CMakeFiles/raycast.dir/main.c.o
+raycast: CMakeFiles/raycast.dir/src/main.c.o
 raycast: CMakeFiles/raycast.dir/build.make
 raycast: /nix/store/blz0s4hw10h46dcvik27qfn79xfzran6-sdl3-3.1.6-lib/lib/libSDL3.so.0.1.6
 raycast: CMakeFiles/raycast.dir/link.txt

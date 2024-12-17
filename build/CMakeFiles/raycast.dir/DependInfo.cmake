@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/nikolasd/dev/c/raycast/main.c" "CMakeFiles/raycast.dir/main.c.o" "gcc" "CMakeFiles/raycast.dir/main.c.o.d"
+  "/home/nikolasd/dev/c/raycast/src/main.c" "CMakeFiles/raycast.dir/src/main.c.o" "gcc" "CMakeFiles/raycast.dir/src/main.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

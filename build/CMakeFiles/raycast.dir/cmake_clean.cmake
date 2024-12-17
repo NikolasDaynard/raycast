@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/raycast.dir/main.c.o"
-  "CMakeFiles/raycast.dir/main.c.o.d"
+  "CMakeFiles/raycast.dir/src/main.c.o"
+  "CMakeFiles/raycast.dir/src/main.c.o.d"
   "raycast"
   "raycast.pdb"
 )

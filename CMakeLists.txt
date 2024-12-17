@@ -9,7 +9,7 @@ set(CMAKE_PREFIX_PATH "/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-de
 find_package(SDL3 REQUIRED)
 
 # Add your executable
-add_executable(raycast main.c)
+add_executable(raycast src/main.c)
 
 # Link SDL3 libraries
 target_link_libraries(raycast PRIVATE SDL3::SDL3)
