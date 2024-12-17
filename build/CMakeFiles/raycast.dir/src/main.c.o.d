@@ -111,4 +111,23 @@ CMakeFiles/raycast.dir/src/main.c.o: \
   /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_version.h \
   /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_oldnames.h \
   /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_main.h \
-  /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_main_impl.h
+  /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_main_impl.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/stdio.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/types/__fpos_t.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/types/__fpos64_t.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/types/struct_FILE.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/types/cookie_io_functions_t.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/stdio_lim.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/stdio2-decl.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/stdio.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/stdio2.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/math.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/math-vector.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/libm-simd-decl-stubs.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/flt-eval-method.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/fp-logb.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/fp-fast.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/mathcalls-helper-functions.h \
+  /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/mathcalls.h \
+  /home/nikolasd/dev/c/raycast/src/raycasting/raycast.c \
+  /home/nikolasd/dev/c/raycast/src/raycasting/raycast.h

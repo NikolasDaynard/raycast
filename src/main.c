@@ -8,6 +8,9 @@
 #define SDL_MAIN_USE_CALLBACKS 1  /* use the callbacks instead of main() */
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+#include <stdio.h>
+#include <math.h>
+#include "raycasting/raycast.c"
 
 /* We will use this renderer to draw into this window every frame. */
 static SDL_Window *window = NULL;
@@ -59,71 +62,42 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     const float size = 200.0f + (200.0f * scale);
 
     SDL_Vertex vertices[4];
-    int i;
 
     /* as you can see from this, rendering draws over whatever was drawn before it. */
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
     SDL_RenderClear(renderer);  /* start with a blank canvas. */
 
-    /* Draw a single triangle with a different color at each vertex. Center this one and make it grow and shrink. */
-    /* You always draw triangles with this, but you can string triangles together to form polygons. */
-    SDL_zeroa(vertices);
-    vertices[0].position.x = ((float) WINDOW_WIDTH) / 2.0f;
-    vertices[0].position.y = (((float) WINDOW_HEIGHT) - size) / 2.0f;
-    vertices[0].color.r = 1.0f;
-    vertices[0].color.a = 1.0f;
-    vertices[1].position.x = (((float) WINDOW_WIDTH) + size) / 2.0f;
-    vertices[1].position.y = (((float) WINDOW_HEIGHT) + size) / 2.0f;
-    vertices[1].color.g = 1.0f;
-    vertices[1].color.a = 1.0f;
-    vertices[2].position.x = (((float) WINDOW_WIDTH) - size) / 2.0f;
-    vertices[2].position.y = (((float) WINDOW_HEIGHT) + size) / 2.0f;
-    vertices[2].color.b = 1.0f;
-    vertices[2].color.a = 1.0f;
+    // SDL_zeroa(vertices);
+    // vertices[0].position.x = ((float) WINDOW_WIDTH) / 2.0f;
+    // vertices[0].position.y = (((float) WINDOW_HEIGHT) - size) / 2.0f;
+    // vertices[0].color.r = 1.0f;
+    // vertices[0].color.a = 1.0f;
+    // vertices[1].position.x = (((float) WINDOW_WIDTH) + size) / 2.0f;
+    // vertices[1].position.y = (((float) WINDOW_HEIGHT) + size) / 2.0f;
+    // vertices[1].color.g = 1.0f;
+    // vertices[1].color.a = 1.0f;
+    // vertices[2].position.x = (((float) WINDOW_WIDTH) - size) / 2.0f;
+    // vertices[2].position.y = (((float) WINDOW_HEIGHT) + size) / 2.0f;
+    // vertices[2].color.b = 1.0f;
+    // vertices[2].color.a = 1.0f;
 
-    SDL_RenderGeometry(renderer, NULL, vertices, 3, NULL, 0);
+    // SDL_RenderGeometry(renderer, NULL, vertices, 3, NULL, 0);
 
-    /* you can also map a texture to the geometry! Texture coordinates go from 0.0f to 1.0f. That will be the location
-       in the texture bound to this vertex. */
-    SDL_zeroa(vertices);
-    vertices[0].position.x = 10.0f;
-    vertices[0].position.y = 10.0f;
-    vertices[0].color.r = vertices[0].color.g = vertices[0].color.b = vertices[0].color.a = 1.0f;
-    vertices[0].tex_coord.x = 0.0f;
-    vertices[0].tex_coord.y = 0.0f;
-    vertices[1].position.x = 150.0f;
-    vertices[1].position.y = 10.0f;
-    vertices[1].color.r = vertices[1].color.g = vertices[1].color.b = vertices[1].color.a = 1.0f;
-    vertices[1].tex_coord.x = 1.0f;
-    vertices[1].tex_coord.y = 0.0f;
-    vertices[2].position.x = 10.0f;
-    vertices[2].position.y = 150.0f;
-    vertices[2].color.r = vertices[2].color.g = vertices[2].color.b = vertices[2].color.a = 1.0f;
-    vertices[2].tex_coord.x = 0.0f;
-    vertices[2].tex_coord.y = 1.0f;
-    SDL_RenderGeometry(renderer, texture, vertices, 3, NULL, 0);
-
-    /* Did that only draw half of the texture? You can do multiple triangles sharing some vertices,
-       using indices, to get the whole thing on the screen: */
-
-    /* Let's just move this over so it doesn't overlap... */
-    for (i = 0; i < 3; i++) {
-        vertices[i].position.x += 450;
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_FPoint startingPoint; // light
+    startingPoint.x = .5;
+    startingPoint.y = .5;
+    // startingPoint.y = ((float)y) / WINDOW_HEIGHT;
+    // for (int x = 0; x < WINDOW_WIDTH; x++) {
+    //     for (int y = 0; y < WINDOW_HEIGHT; y++) {
+    for (int i = 0; i < 300; i++) {
+        SDL_FPoint direction = {sin(((float)i) / WINDOW_WIDTH), 
+            sin(((float)-i) / WINDOW_WIDTH)};
+        SDL_FPoint point = raycastDir(startingPoint, direction);
+        SDL_RenderPoint(renderer, point.x * WINDOW_WIDTH, point.y * WINDOW_HEIGHT);
     }
-
-    /* we need one more vertex, since the two triangles can share two of them. */
-    vertices[3].position.x = 600.0f;
-    vertices[3].position.y = 150.0f;
-    vertices[3].color.r = vertices[0].color.g = vertices[0].color.b = vertices[0].color.a = 1.0f;
-    vertices[3].tex_coord.x = 1.0f;
-    vertices[3].tex_coord.y = 1.0f;
-
-    /* And an index to tell it to reuse some of the vertices between triangles... */
-    {
-    /* 4 vertices, but 6 actual places they used. Indices need less bandwidth to transfer and can reorder vertices easily! */
-    const int indices[] = { 0, 1, 2, 1, 2, 3 };
-    SDL_RenderGeometry(renderer, texture, vertices, 4, indices, SDL_arraysize(indices));
-    }
+    //     }
+    // }
 
     SDL_RenderPresent(renderer);  /* put it all on the screen! */
 

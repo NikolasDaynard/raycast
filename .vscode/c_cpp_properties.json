@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include"
+            ],
+            "defines": [],
+            "compilerPath": "/run/current-system/sw/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-clang-x64",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}
