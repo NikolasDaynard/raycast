@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/nikolasd/dev/c/raycast/build",
+  "command": "/run/current-system/sw/bin/clang -I/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include -g -o CMakeFiles/raycast.dir/main.c.o -c /home/nikolasd/dev/c/raycast/main.c",
+  "file": "/home/nikolasd/dev/c/raycast/main.c",
+  "output": "CMakeFiles/raycast.dir/main.c.o"
+}
+]

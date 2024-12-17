@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 3.21) # SDL3 requires CMake >= 3.21
+project(raycast VERSION 0.1.0 LANGUAGES C)
+
+# Add SDL3 package path
+set(CMAKE_PREFIX_PATH "/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/")
+
+# Find SDL3 package
+find_package(SDL3 REQUIRED)
+
+# Add your executable
+add_executable(raycast main.c)
+
+# Link SDL3 libraries
+target_link_libraries(raycast PRIVATE SDL3::SDL3)
+
+# Enable testing if needed
+include(CTest)
+enable_testing()
+
+# Package settings (optional)
+set(CPACK_PROJECT_NAME ${PROJECT_NAME})
+set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
+include(CPack)
