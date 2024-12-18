@@ -31,11 +31,19 @@ static int texture_height = 0;
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
     surface = SDL_CreateSurface(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_PIXELFORMAT_RGBA32);
-    for (int i = 0; i < WINDOW_WIDTH; i ++) {
-        for (int j = 0; j < WINDOW_HEIGHT; j ++) {
-            SDL_WriteSurfacePixel(surface, i, j, 128, 33, 192, 255);
+    
+    if (surface == NULL) {
+        printf("%s", SDL_GetError());
+    }
+
+    for (int i = 0; i < WINDOW_WIDTH - 1; i ++) {
+        for (int j = 0; j < WINDOW_HEIGHT - 1; j ++) {
+            SDL_WriteSurfacePixel(surface, i, j, 128 * j, 33, 192 * i, 255);
         }
     }
+    printf("w%d\n", surface->w);
+    printf("h%d\n", surface->h);
+
     SDL_SetAppMetadata("Simple Radience Cascade Renderer", "0.0.1", "com.example.renderer-geometry");
 
     if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -50,6 +58,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     }
 
     context = SDL_GL_CreateContext(window);
+        glEnable(GL_TEXTURE_2D);
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
@@ -77,13 +86,9 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
-        printf("w%f\n", surface->w);
-        printf("h%f\n", surface->h);
-
     // SDL_Texture *target_texture = SDL_CreateTextureFromSurface(renderer, surface);
         GLuint TextureID = 0;
         glGenTextures(1, &TextureID);
-        glBindTexture(GL_TEXTURE_2D, TextureID);
         
         int Mode = GL_RGB;
         
@@ -91,36 +96,41 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             Mode = GL_RGBA;
         }
         
-        glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
-        
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-        // SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
-        // SDL_RenderClear(renderer);
-        // SDL_SetRenderTarget(renderer, NULL);
-        float w = 320.f;
-        float h = 240.f;
-        glViewport(0, 0, w, h);
+        // For Ortho mode, of course
+        int X = 0;
+        int Y = 0;
+        // float w = 320.f;
+        // float h = 240.f;
+        glViewport(-surface->w / 4, -surface->h / 4, surface->w, surface->h);
+        // glOrtho(0,surface->w,surface->h,0,-1,1); //Set the matrix
         glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glBindTexture(GL_TEXTURE_2D, TextureID);
+
+
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
         
-        // For Ortho mode, of course
-        int X = 0;
-        int Y = 0;
-        int Width = 100;
-        int Height = 100;
-        glEnable(GL_TEXTURE_2D);
+        int W = surface->w;
+        int H = surface->h;
+
         glBegin(GL_QUADS);
             glTexCoord2f(0, 0); glVertex3f(X, Y, 0);
-            glTexCoord2f(1, 0); glVertex3f(X + Width, Y, 0);
-            glTexCoord2f(1, 1); glVertex3f(X + Width, Y + Height, 0);
-            glTexCoord2f(0, 1); glVertex3f(X, Y + Height, 0);
+            glTexCoord2f(1, 0); glVertex3f(X + W, Y, 0);
+            glTexCoord2f(1, 1); glVertex3f(X + W, Y + H, 0);
+            glTexCoord2f(0, 1); glVertex3f(X, Y + H, 0);
         glEnd();
 
         SDL_GL_SwapWindow(window);
+
+
+        SDL_Delay(15);
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
