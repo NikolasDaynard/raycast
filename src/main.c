@@ -63,10 +63,12 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 
     // mouse
     if (event->button.down) {
+        // printf("x%f\n", event->button.x);
+        // printf("y%f\n", event->button.y);
         
         //
-    // SDL_WriteSurfacePixel
-    // SDL_WriteSurfacePixel(surface, 200, 200, 128, 0, 0, 255);
+        // SDL_WriteSurfacePixel
+        SDL_WriteSurfacePixel(surface, event->button.x, event->button.y, 128, 0, 0, 255);
         // event->button.x
     }
     return SDL_APP_CONTINUE;  /* carry on with the program! */
@@ -75,6 +77,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
+        printf("w%f\n", surface->w);
+        printf("h%f\n", surface->h);
 
     // SDL_Texture *target_texture = SDL_CreateTextureFromSurface(renderer, surface);
         GLuint TextureID = 0;
@@ -83,7 +87,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         
         int Mode = GL_RGB;
         
-        if(surface->format == SDL_PIXELFORMAT_RGBA8888) {
+        if(surface->format == SDL_PIXELFORMAT_RGBA32) {
             Mode = GL_RGBA;
         }
         
@@ -108,7 +112,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         int Y = 0;
         int Width = 100;
         int Height = 100;
-        
+        glEnable(GL_TEXTURE_2D);
         glBegin(GL_QUADS);
             glTexCoord2f(0, 0); glVertex3f(X, Y, 0);
             glTexCoord2f(1, 0); glVertex3f(X + Width, Y, 0);
@@ -116,8 +120,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             glTexCoord2f(0, 1); glVertex3f(X, Y + Height, 0);
         glEnd();
 
-        // SDL_GL_SwapWindow(window);
-        // SDL_Delay(16);
+        SDL_GL_SwapWindow(window);
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
