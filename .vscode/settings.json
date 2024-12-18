@@ -3,6 +3,7 @@
         "raycast.h": "c",
         "sdl.h": "c",
         "cmath": "c",
-        "*.tcc": "c"
+        "*.tcc": "c",
+        "sdl_video.h": "c"
     }
 }
