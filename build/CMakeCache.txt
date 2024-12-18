@@ -280,6 +280,9 @@ GITCOMMAND:FILEPATH=/run/current-system/sw/bin/git
 //Command to build the project
 MAKECOMMAND:STRING=/nix/store/4k2h9qsps52n1v56zq03yi67dwmxa81i-cmake-3.30.5/bin/cmake --build . --config "${CTEST_CONFIGURATION_TYPE}"
 
+//Path to a library.
+MATH_LIBRARY:FILEPATH=/nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/libm.so
+
 //Path to the memory checking command, used for memory error detection.
 MEMORYCHECK_COMMAND:FILEPATH=/run/current-system/sw/bin/valgrind
 

@@ -13,10 +13,15 @@ SDL_FPoint raycastDir(SDL_FPoint point, SDL_FPoint direction) {
     rect.w = .4;
     rect.h = .1;
 
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 1000; i++) {
         SDL_FPoint newPoint = point;
         newPoint.x += direction.x * i;
         newPoint.y += direction.y * i;
+        if (newPoint.x > 1.0 || newPoint.x < 0.0 ||
+            newPoint.y > 1.0 || newPoint.y < 0.0) {
+            break;
+        }
+        // printf("new pointy %f,%f\n", newPoint.x, newPoint.y);
         if (pointInRect(rect, newPoint)) {
             return newPoint;
         }   

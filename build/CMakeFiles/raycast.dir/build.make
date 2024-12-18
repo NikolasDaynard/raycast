@@ -93,6 +93,7 @@ raycast_EXTERNAL_OBJECTS =
 raycast: CMakeFiles/raycast.dir/src/main.c.o
 raycast: CMakeFiles/raycast.dir/build.make
 raycast: /nix/store/blz0s4hw10h46dcvik27qfn79xfzran6-sdl3-3.1.6-lib/lib/libSDL3.so.0.1.6
+raycast: /nix/store/wn7v2vhyyyi6clcyn0s9ixvl7d4d87ic-glibc-2.40-36/lib/libm.so
 raycast: CMakeFiles/raycast.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/nikolasd/dev/c/raycast/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C executable raycast"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/raycast.dir/link.txt --verbose=$(VERBOSE)
