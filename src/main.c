@@ -31,7 +31,11 @@ static int texture_height = 0;
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
     surface = SDL_CreateSurface(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_PIXELFORMAT_RGBA32);
-
+    for (int i = 0; i < WINDOW_WIDTH; i ++) {
+        for (int j = 0; j < WINDOW_HEIGHT; j ++) {
+            SDL_WriteSurfacePixel(surface, i, j, 128, 33, 192, 255);
+        }
+    }
     SDL_SetAppMetadata("Simple Radience Cascade Renderer", "0.0.1", "com.example.renderer-geometry");
 
     if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -62,7 +66,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
         
         //
     // SDL_WriteSurfacePixel
-    //SDL_WriteSurfacePixel(surface, 200, 200, 128, 0, 0, 255);
+    // SDL_WriteSurfacePixel(surface, 200, 200, 128, 0, 0, 255);
         // event->button.x
     }
     return SDL_APP_CONTINUE;  /* carry on with the program! */
@@ -87,12 +91,10 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+        // SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
-
-        SDL_RenderClear(renderer);
-        SDL_SetRenderTarget(renderer, NULL);
-        SDL_Rect rect = { 32, 16, 256, 224 };
+        // SDL_RenderClear(renderer);
+        // SDL_SetRenderTarget(renderer, NULL);
         float w = 320.f;
         float h = 240.f;
         glViewport(0, 0, w, h);
@@ -114,8 +116,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
             glTexCoord2f(0, 1); glVertex3f(X, Y + Height, 0);
         glEnd();
 
-        SDL_GL_SwapWindow(window);
-        SDL_Delay(16);
+        // SDL_GL_SwapWindow(window);
+        // SDL_Delay(16);
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
