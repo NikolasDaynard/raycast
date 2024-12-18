@@ -82,28 +82,24 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
     // mouse
     if (event->button.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
         clickingLMB = true;
-        printf("x%f\n", event->button.x);
-        printf("y%f\n", event->button.y);
-        
-        //
-        // SDL_WriteSurfacePixel
-
-        // event->button.x
     }else if (event->button.type == SDL_EVENT_MOUSE_BUTTON_UP) {
         clickingLMB = false;
     }
 
-    if (event->motion.type == SDL_EVENT_MOUSE_MOTION) {
+    if (event->motion.type == SDL_EVENT_MOUSE_MOTION
+        || event->button.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
         if (clickingLMB) {
             int x_pos = event->motion.x;
             int y_pos = WINDOW_HEIGHT - event->motion.y;
-
-            for (int i = x_pos; i < (x_pos + 30) - 1; i ++) {
-                for (int j = y_pos; j < (y_pos + 30) - 1; j ++) {
+            int radius = 15;
+            for (int i = x_pos - radius; i < (x_pos + radius) - 1; i ++) {
+                for (int j = y_pos - radius; j < (y_pos + radius) - 1; j ++) {
                     if (j < 1 || i < 1) {
                         break;
                     }
-                    SDL_WriteSurfacePixel(surface, i, j, 128, 0, 0, 255);
+                    if (sqrt(pow(i - x_pos, 2) + pow(j - y_pos, 2)) < radius) {
+                        SDL_WriteSurfacePixel(surface, i, j, 128, 0, 0, 255);
+                    }
                 }
             }
         }
@@ -126,8 +122,6 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         
 
         // For Ortho mode, of course
-        int X = 0;
-        int Y = 0;
         glViewport(-WINDOW_WIDTH, -WINDOW_HEIGHT, WINDOW_WIDTH * 2, WINDOW_HEIGHT * 2);
         // glOrtho(0,surface->w,surface->h,0,-1,1); //Set the matrix
         glClearColor(0.f, 0.f, 0.f, 1.f);
@@ -143,6 +137,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
         glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
         
+        int X = 0;
+        int Y = 0;
         int W = 1;
         int H = 1;
 
@@ -158,7 +154,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 
         SDL_Delay(15);
-        printf("%d click \n", clickingLMB);
+        // printf("%d click \n", clickingLMB);
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
