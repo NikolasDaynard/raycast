@@ -128,9 +128,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         // For Ortho mode, of course
         int X = 0;
         int Y = 0;
-        float w = 320.f;
-        float h = 240.f;
-        glViewport(-w * 2, -h * 2, w * 4, h * 4);
+        glViewport(-WINDOW_WIDTH, -WINDOW_HEIGHT, WINDOW_WIDTH * 2, WINDOW_HEIGHT * 2);
         // glOrtho(0,surface->w,surface->h,0,-1,1); //Set the matrix
         glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT);
