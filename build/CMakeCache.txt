@@ -289,6 +289,48 @@ MEMORYCHECK_COMMAND:FILEPATH=/run/current-system/sw/bin/valgrind
 //File that contains suppressions for the memory checker
 MEMORYCHECK_SUPPRESSIONS_FILE:FILEPATH=
 
+//Path to a file.
+OPENGL_EGL_INCLUDE_DIR:PATH=/nix/store/mrwvq9z9z2l0mqyr7llm574xz3p6fysp-libglvnd-1.7.0-dev/include
+
+//Path to a file.
+OPENGL_GLES2_INCLUDE_DIR:PATH=/nix/store/mrwvq9z9z2l0mqyr7llm574xz3p6fysp-libglvnd-1.7.0-dev/include
+
+//Path to a file.
+OPENGL_GLES3_INCLUDE_DIR:PATH=/nix/store/mrwvq9z9z2l0mqyr7llm574xz3p6fysp-libglvnd-1.7.0-dev/include
+
+//Path to a file.
+OPENGL_GLU_INCLUDE_DIR:PATH=/nix/store/ga5vsydz09vr9w7skr2iswjcbnimzvpp-glu-9.0.3-dev/include
+
+//Path to a file.
+OPENGL_GLX_INCLUDE_DIR:PATH=/nix/store/mrwvq9z9z2l0mqyr7llm574xz3p6fysp-libglvnd-1.7.0-dev/include
+
+//Path to a file.
+OPENGL_INCLUDE_DIR:PATH=/nix/store/mrwvq9z9z2l0mqyr7llm574xz3p6fysp-libglvnd-1.7.0-dev/include
+
+//Path to a library.
+OPENGL_egl_LIBRARY:FILEPATH=/nix/store/ri85b3kn22dmr4yiimfsgd6r5x7zgk4z-libglvnd-1.7.0/lib/libEGL.so
+
+//Path to a library.
+OPENGL_gl_LIBRARY:FILEPATH=OPENGL_gl_LIBRARY-NOTFOUND
+
+//Path to a library.
+OPENGL_gles2_LIBRARY:FILEPATH=/nix/store/ri85b3kn22dmr4yiimfsgd6r5x7zgk4z-libglvnd-1.7.0/lib/libGLESv2.so
+
+//Path to a library.
+OPENGL_gles3_LIBRARY:FILEPATH=/nix/store/ri85b3kn22dmr4yiimfsgd6r5x7zgk4z-libglvnd-1.7.0/lib/libGLESv2.so
+
+//Path to a library.
+OPENGL_glu_LIBRARY:FILEPATH=/nix/store/4a3g9kj3av3h8awk54j99cipwn1flbw2-glu-9.0.3/lib/libGLU.so
+
+//Path to a library.
+OPENGL_glx_LIBRARY:FILEPATH=/nix/store/ri85b3kn22dmr4yiimfsgd6r5x7zgk4z-libglvnd-1.7.0/lib/libGLX.so
+
+//Path to a library.
+OPENGL_opengl_LIBRARY:FILEPATH=/nix/store/ri85b3kn22dmr4yiimfsgd6r5x7zgk4z-libglvnd-1.7.0/lib/libOpenGL.so
+
+//Path to a file.
+OPENGL_xmesa_INCLUDE_DIR:PATH=OPENGL_xmesa_INCLUDE_DIR-NOTFOUND
+
 //The directory containing a CMake configuration file for SDL3.
 SDL3_DIR:PATH=/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/lib/cmake/SDL3
 
@@ -363,6 +405,8 @@ CMAKE_EXE_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
 CMAKE_EXE_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO
 CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: CMAKE_EXPORT_COMPILE_COMMANDS
+CMAKE_EXPORT_COMPILE_COMMANDS-ADVANCED:INTERNAL=1
 //Name of external makefile project generator.
 CMAKE_EXTRA_GENERATOR:INTERNAL=
 //Name of generator.
@@ -482,6 +526,8 @@ CTEST_SUBMIT_RETRY_COUNT-ADVANCED:INTERNAL=1
 CTEST_SUBMIT_RETRY_DELAY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: DART_TESTING_TIMEOUT
 DART_TESTING_TIMEOUT-ADVANCED:INTERNAL=1
+//Details about finding OpenGL
+FIND_PACKAGE_MESSAGE_DETAILS_OpenGL:INTERNAL=[/nix/store/ri85b3kn22dmr4yiimfsgd6r5x7zgk4z-libglvnd-1.7.0/lib/libOpenGL.so][/nix/store/ri85b3kn22dmr4yiimfsgd6r5x7zgk4z-libglvnd-1.7.0/lib/libGLX.so][/nix/store/mrwvq9z9z2l0mqyr7llm574xz3p6fysp-libglvnd-1.7.0-dev/include][c ][v()]
 //ADVANCED property for variable: GITCOMMAND
 GITCOMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MAKECOMMAND
@@ -490,6 +536,32 @@ MAKECOMMAND-ADVANCED:INTERNAL=1
 MEMORYCHECK_COMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: MEMORYCHECK_SUPPRESSIONS_FILE
 MEMORYCHECK_SUPPRESSIONS_FILE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENGL_EGL_INCLUDE_DIR
+OPENGL_EGL_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENGL_GLES2_INCLUDE_DIR
+OPENGL_GLES2_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENGL_GLES3_INCLUDE_DIR
+OPENGL_GLES3_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENGL_GLU_INCLUDE_DIR
+OPENGL_GLU_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENGL_GLX_INCLUDE_DIR
+OPENGL_GLX_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENGL_INCLUDE_DIR
+OPENGL_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENGL_egl_LIBRARY
+OPENGL_egl_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENGL_gles2_LIBRARY
+OPENGL_gles2_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENGL_gles3_LIBRARY
+OPENGL_gles3_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENGL_glu_LIBRARY
+OPENGL_glu_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENGL_glx_LIBRARY
+OPENGL_glx_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENGL_opengl_LIBRARY
+OPENGL_opengl_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OPENGL_xmesa_INCLUDE_DIR
+OPENGL_xmesa_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: SITE
 SITE-ADVANCED:INTERNAL=1
 //linker supports push/pop state

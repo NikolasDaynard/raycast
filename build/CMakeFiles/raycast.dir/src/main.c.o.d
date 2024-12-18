@@ -112,6 +112,8 @@ CMakeFiles/raycast.dir/src/main.c.o: \
   /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_oldnames.h \
   /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_main.h \
   /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_main_impl.h \
+  /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_opengl.h \
+  /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_opengl_glext.h \
   /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/stdio.h \
   /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/types/__fpos_t.h \
   /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/types/__fpos64_t.h \

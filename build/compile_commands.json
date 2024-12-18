@@ -1,7 +1,7 @@
 [
 {
   "directory": "/home/nikolasd/dev/c/raycast/build",
-  "command": "/run/current-system/sw/bin/clang  -I/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include -g -o CMakeFiles/raycast.dir/src/main.c.o -c /home/nikolasd/dev/c/raycast/src/main.c",
+  "command": "/run/current-system/sw/bin/clang  -I/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include -isystem /nix/store/mrwvq9z9z2l0mqyr7llm574xz3p6fysp-libglvnd-1.7.0-dev/include -g -o CMakeFiles/raycast.dir/src/main.c.o -c /home/nikolasd/dev/c/raycast/src/main.c",
   "file": "/home/nikolasd/dev/c/raycast/src/main.c",
   "output": "CMakeFiles/raycast.dir/src/main.c.o"
 }

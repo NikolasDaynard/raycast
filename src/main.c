@@ -11,6 +11,8 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+#include <SDL3/SDL_video.h>
+#include <SDL3/SDL_opengl.h>
 #include <stdio.h>
 #include <math.h>
 #include "raycasting/raycast.c"
@@ -19,6 +21,7 @@
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
 static SDL_Texture *texture = NULL;
+static SDL_GLContext context = NULL;
 static int texture_width = 0;
 static int texture_height = 0;
 float player_x = .19;
@@ -37,10 +40,12 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         return SDL_APP_FAILURE;
     }
 
-    if (!SDL_CreateWindowAndRenderer("examples/renderer/geometry", WINDOW_WIDTH, WINDOW_HEIGHT, 0, &window, &renderer)) {
+    if (!SDL_CreateWindowAndRenderer("examples/renderer/geometry", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE, &window, &renderer)) {
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
+
+    context = SDL_GL_CreateContext(window);
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
@@ -71,35 +76,12 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
-    const Uint64 now = SDL_GetTicks();
 
-    SDL_Vertex vertices[4];
 
-    /* as you can see from this, rendering draws over whatever was drawn before it. */
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
-    SDL_RenderClear(renderer);  /* start with a blank canvas. */
-
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    // startingPoint.y = ((float)y) / WINDOW_HEIGHT;
-    // for (int x = 0; x < WINDOW_WIDTH; x++) {
-    //     for (int y = 0; y < WINDOW_HEIGHT; y++) {
-    for (float i = 0; i < 3.14 * 2; i += 0.01) {
-        SDL_FPoint direction = {
-            sin(i) / 1000.0,
-            cos(i) / 1000.0
-        };
-
-        SDL_FPoint point = raycastDir((SDL_FPoint){player_x, player_y}, direction);
-        // if (point.x != -1) {
-            // printf("%f", point.x);
-        // }
-        SDL_RenderPoint(renderer, point.x * WINDOW_WIDTH, point.y * WINDOW_HEIGHT);
-    }
-    SDL_RenderPoint(renderer, player_x * WINDOW_WIDTH, player_y * WINDOW_HEIGHT);
-    //     }
-    // }
-
-    SDL_RenderPresent(renderer);  /* put it all on the screen! */
+    // now you can make GL calls.
+    glClearColor(0,0,0,1);
+    glClear(GL_COLOR_BUFFER_BIT);
+    SDL_GL_SwapWindow(window);
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
@@ -108,5 +90,9 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 void SDL_AppQuit(void *appstate, SDL_AppResult result)
 {
     SDL_DestroyTexture(texture);
+
+    // Once finished with OpenGL functions, the SDL_GLContext can be destroyed.
+    SDL_GL_DestroyContext(context);  
+
     /* SDL will clean up the window/renderer for us. */
 }

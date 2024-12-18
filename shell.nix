@@ -4,6 +4,7 @@ mkShell {
   buildInputs = [
     pkg-config
     cmake
+    libGLU
   ];
   # Print the SDL3 path on shell entry
   shellHook = ''

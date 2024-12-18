@@ -55,6 +55,8 @@ CMakeFiles/raycast.dir/src/main.c.o: /home/nikolasd/dev/c/raycast/src/main.c \
   /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_mouse.h \
   /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_mutex.h \
   /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_oldnames.h \
+  /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_opengl.h \
+  /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_opengl_glext.h \
   /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_pen.h \
   /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_pixels.h \
   /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_platform.h \
@@ -145,11 +147,7 @@ CMakeFiles/raycast.dir/src/main.c.o: /home/nikolasd/dev/c/raycast/src/main.c \
 
 /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/stdio.h:
 
-/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_power.h:
-
-/nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/gnu/stubs-64.h:
-
-/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_platform_defines.h:
+/nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/stdc-predef.h:
 
 /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_platform.h:
 
@@ -173,6 +171,8 @@ CMakeFiles/raycast.dir/src/main.c.o: /home/nikolasd/dev/c/raycast/src/main.c \
 
 /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/long-double.h:
 
+/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_opengl.h:
+
 /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_storage.h:
 
 /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_keycode.h:
@@ -180,6 +180,10 @@ CMakeFiles/raycast.dir/src/main.c.o: /home/nikolasd/dev/c/raycast/src/main.c \
 /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/floatn-common.h:
 
 /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_hidapi.h:
+
+/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_opengl_glext.h:
+
+/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_sensor.h:
 
 /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_haptic.h:
 
@@ -287,6 +291,12 @@ CMakeFiles/raycast.dir/src/main.c.o: /home/nikolasd/dev/c/raycast/src/main.c \
 
 /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/types/locale_t.h:
 
+/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_platform_defines.h:
+
+/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_power.h:
+
+/nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/gnu/stubs-64.h:
+
 /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/wchar2-decl.h:
 
 /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_properties.h:
@@ -298,8 +308,6 @@ CMakeFiles/raycast.dir/src/main.c.o: /home/nikolasd/dev/c/raycast/src/main.c \
 /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_scancode.h:
 
 /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/endian.h:
-
-/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_sensor.h:
 
 /nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-dev/include/SDL3/SDL_stdinc.h:
 
@@ -372,8 +380,6 @@ CMakeFiles/raycast.dir/src/main.c.o: /home/nikolasd/dev/c/raycast/src/main.c \
 /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/wchar.h:
 
 /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/types/__FILE.h:
-
-/nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/stdc-predef.h:
 
 /nix/store/lw21wr626v5sdcaxxkv2k4zf1121hfc9-glibc-2.40-36-dev/include/bits/types/__locale_t.h:
 
