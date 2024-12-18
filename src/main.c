@@ -25,7 +25,7 @@ static SDL_Surface *surface = NULL; // stores the radience state
 static SDL_GLContext context = NULL;
 static int texture_width = 0;
 static int texture_height = 0;
-int TEST_X = 0;
+bool clickingLMB = false;
 
 
 /* This function runs once at startup. */
@@ -71,31 +71,42 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
     }
 
     if (event->key.down) {
-        if (event->key.key == SDLK_LEFT) {
-            TEST_X += 1;
-        }
-        if (event->key.key == SDLK_RIGHT) {
-            TEST_X -= 1;
-        }
+        // if (event->key.key == SDLK_LEFT) {
+        //     TEST_X += 1;
+        // }
+        // if (event->key.key == SDLK_RIGHT) {
+        //     TEST_X -= 1;
+        // }
     }
 
     // mouse
-    if (event->button.down) {
+    if (event->button.type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
+        clickingLMB = true;
         printf("x%f\n", event->button.x);
         printf("y%f\n", event->button.y);
         
         //
         // SDL_WriteSurfacePixel
-        SDL_WriteSurfacePixel(surface, event->button.x, event->button.y, 128, 0, 0, 255);
-        for (int i = event->button.x; i < (event->button.x + 30) - 1; i ++) {
-            for (int j = event->button.y; j < (event->button.y + 30) - 1; j ++) {
-                if (j < 1 || i < 1) {
-                    break;
+
+        // event->button.x
+    }else if (event->button.type == SDL_EVENT_MOUSE_BUTTON_UP) {
+        clickingLMB = false;
+    }
+
+    if (event->motion.type == SDL_EVENT_MOUSE_MOTION) {
+        if (clickingLMB) {
+            int x_pos = event->motion.x;
+            int y_pos = WINDOW_HEIGHT - event->motion.y;
+
+            for (int i = x_pos; i < (x_pos + 30) - 1; i ++) {
+                for (int j = y_pos; j < (y_pos + 30) - 1; j ++) {
+                    if (j < 1 || i < 1) {
+                        break;
+                    }
+                    SDL_WriteSurfacePixel(surface, i, j, 128, 0, 0, 255);
                 }
-                SDL_WriteSurfacePixel(surface, i, j, 128, 0, 0, 255);
             }
         }
-        // event->button.x
     }
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
@@ -119,7 +130,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         int Y = 0;
         float w = 320.f;
         float h = 240.f;
-        glViewport(0, 0, w, h);
+        glViewport(-w * 2, -h * 2, w * 4, h * 4);
         // glOrtho(0,surface->w,surface->h,0,-1,1); //Set the matrix
         glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -149,6 +160,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 
         SDL_Delay(15);
+        printf("%d click \n", clickingLMB);
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
