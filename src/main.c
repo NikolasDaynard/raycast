@@ -25,8 +25,6 @@ static SDL_Surface *surface = NULL; // stores the radience state
 static SDL_GLContext context = NULL;
 static int texture_width = 0;
 static int texture_height = 0;
-float player_x = .19;
-float player_y = .25;
 
 
 /* This function runs once at startup. */
@@ -74,14 +72,50 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
 
+    // SDL_Texture *target_texture = SDL_CreateTextureFromSurface(renderer, surface);
+        GLuint TextureID = 0;
+        glGenTextures(1, &TextureID);
+        glBindTexture(GL_TEXTURE_2D, TextureID);
+        
+        int Mode = GL_RGB;
+        
+        if(surface->format == SDL_PIXELFORMAT_RGBA8888) {
+            Mode = GL_RGBA;
+        }
+        
+        glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    // now you can make GL calls.
-    glClearColor(0,0,0,1);
-    glClear(GL_COLOR_BUFFER_BIT);
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
-    // render here
 
-    SDL_GL_SwapWindow(window);
+        SDL_RenderClear(renderer);
+        SDL_SetRenderTarget(renderer, NULL);
+        SDL_Rect rect = { 32, 16, 256, 224 };
+        float w = 320.f;
+        float h = 240.f;
+        glViewport(0, 0, w, h);
+        glClearColor(0.f, 0.f, 0.f, 1.f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glBindTexture(GL_TEXTURE_2D, TextureID);
+        
+        // For Ortho mode, of course
+        int X = 0;
+        int Y = 0;
+        int Width = 100;
+        int Height = 100;
+        
+        glBegin(GL_QUADS);
+            glTexCoord2f(0, 0); glVertex3f(X, Y, 0);
+            glTexCoord2f(1, 0); glVertex3f(X + Width, Y, 0);
+            glTexCoord2f(1, 1); glVertex3f(X + Width, Y + Height, 0);
+            glTexCoord2f(0, 1); glVertex3f(X, Y + Height, 0);
+        glEnd();
+
+        SDL_GL_SwapWindow(window);
+        SDL_Delay(16);
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
