@@ -31,6 +31,8 @@ static int texture_height = 0;
 bool clickingLMB = false;
 GLuint vshader = 0;
 GLuint fshader = 0;
+GLuint pobject = 0;
+GLuint quadList;
 
 long filelength(FILE *file) {
     long numbytes;
@@ -55,6 +57,25 @@ unsigned char* readShaderFile(const char *filename) {
     fclose(file);
     
     return buffer;
+}
+
+void initQuadList(GLuint *listID)
+{
+  *listID = glGenLists(1);
+  
+  glNewList(*listID, GL_COMPILE);
+    glColor3f(1.0f, 1.0f, 1.0f); // White base color
+    glBegin(GL_TRIANGLE_STRIP);
+      glTexCoord2f(0.0f, 0.0f);
+      glVertex3f(-1.0f, -1.0f, 0.0f);
+      glTexCoord2f(1.0f, 0.0f);
+      glVertex3f(1.0f, -1.0f, 0.0f);
+      glTexCoord2f(0.0f, 1.0f);
+      glVertex3f(-1.0f, 1.0f, 0.0f);
+      glTexCoord2f(1.0f, 1.0f);
+      glVertex3f(1.0f, 1.0f, 0.0f);
+    glEnd();
+  glEndList();
 }
 
 /* This function runs once at startup. */
@@ -129,6 +150,26 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         printf("Frag shader compile error %s\n", str);
   	}
 
+    // Create a program object and attach the two compiled shaders.
+    pobject = glCreateProgram();
+    glAttachShader( pobject, vshader );
+    glAttachShader( pobject, fshader );
+
+    // Link the program object and print out the info log.
+    glLinkProgram( pobject );
+
+    GLint shadersLinked;
+    glGetProgramiv( pobject, GL_LINK_STATUS, &shadersLinked );
+
+    if( shadersLinked == GL_FALSE )
+	{
+        char str[4096];
+		glGetProgramInfoLog( pobject, sizeof(str), NULL, str );
+		printf("Program object linking error %s\n", str);
+	}
+
+    initQuadList(&quadList);
+
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
 
@@ -177,6 +218,36 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
 
+void setupCamera() {
+
+    int width = WINDOW_WIDTH;
+    int height = WINDOW_HEIGHT;
+    
+    // Get window size. It may start out different from the requested
+    // size, and will change if the user resizes the window.
+
+    // Set viewport. This is the pixel rectangle we want to draw into.
+    glViewport( 0, 0, width, height ); // The entire window
+
+    // Select and setup the projection matrix.
+    glMatrixMode(GL_PROJECTION); // "We want to edit the projection matrix"
+    // Select and setup the projection matrix.
+    glMatrixMode(GL_PROJECTION); // "We want to edit the projection matrix"
+    glLoadIdentity(); // Reset the matrix to identity
+    // 20 degrees FOV, same aspect ratio as viewport, depth range 1 to 100
+    // gluPerspective( 15.0f, (GLfloat)width/(GLfloat)height, 1.0f, 100.0f );
+    // identi
+    
+
+    // Select and setup the modelview matrix.
+    glMatrixMode( GL_MODELVIEW ); // "We want to edit the modelview matrix"
+    glLoadIdentity(); // Reset the matrix to identity
+    // Look from 0,-4,0 towards 0,0,0 with Z as "up" in the image
+    // gluLookAt( 0.0f, -8.0f, 1.0f,  // Eye position
+    //            0.0f, 0.0f, -0.5f,   // View point
+    //            0.0f, 0.0f, 1.0f ); // Up vector
+}
+
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
@@ -192,34 +263,18 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         
 
         // For Ortho mode, of course
-        glViewport(-WINDOW_WIDTH, -WINDOW_HEIGHT, WINDOW_WIDTH * 2, WINDOW_HEIGHT * 2);
-        // glOrtho(0,surface->w,surface->h,0,-1,1); //Set the matrix
+        // glViewport(-WINDOW_WIDTH, -WINDOW_HEIGHT, WINDOW_WIDTH * 2, WINDOW_HEIGHT * 2);
+        glOrtho(0,surface->w,surface->h,0,-1,1); //Set the matrix
         glClearColor(0.f, 0.f, 0.f, 1.f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glBindTexture(GL_TEXTURE_2D, TextureID);
+        glUseProgram( pobject );
 
-
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
-        
-        int X = 0;
-        int Y = 0;
-        int W = 1;
-        int H = 1;
-
-        glEnable(GL_TEXTURE_2D);
-        
-        glBegin(GL_QUADS);
-            glTexCoord2f(0, 0); glVertex3f(X, Y, 0);
-            glTexCoord2f(1, 0); glVertex3f(X + W, Y, 0);
-            glTexCoord2f(1, 1); glVertex3f(X + W, Y + H, 0);
-            glTexCoord2f(0, 1); glVertex3f(X, Y + H, 0);
-        glEnd();
+          glPushMatrix();
+            // glTranslatef(0.0f, 3.0f, -1.5f);
+            // glScalef(1.0f, 4.0f, 1.0f);
+            glCallList( quadList );
+        glPopMatrix();
 
         SDL_GL_SwapWindow(window);
 
