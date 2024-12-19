@@ -6,7 +6,7 @@
  */
 
 #define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 640
+#define WINDOW_HEIGHT 480
 #define SDL_MAIN_USE_CALLBACKS 1  /* use the callbacks instead of main() */
 #define GL_GLEXT_PROTOTYPES 1
 
@@ -26,12 +26,15 @@ static SDL_Renderer *renderer = NULL;
 static SDL_Texture *texture = NULL;
 static SDL_Surface *surface = NULL; // stores the radience state
 static SDL_GLContext context = NULL;
+SDL_Texture *text = NULL;
 static int texture_width = 0;
 static int texture_height = 0;
 bool clickingLMB = false;
 GLuint vshader = 0;
 GLuint fshader = 0;
+GLuint shadeshader = 0;
 GLuint pobject = 0;
+GLuint shadeobject = 0;
 float vertices[] = {
     // positions          // colors           // texture coords
     1.0f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
@@ -44,7 +47,6 @@ unsigned int indices[] = {
     1, 2, 3  // second triangle
 };
 unsigned int VBO, VAO, EBO;
-GLuint TextureID = 0;
 Uint64 fps;
 Uint64 fpsCounter;
 
@@ -117,7 +119,6 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     vshader = glCreateShader(GL_VERTEX_SHADER);
 
     const char *vertexShaderStrings[1];
-    // glShaderSource(shader, GLsizei count, const GLchar **string, const GLint *length);
     unsigned char *vertexShaderAssembly = readShaderFile( "../src/shader/shader.vert" );
     vertexShaderStrings[0] = (char*)vertexShaderAssembly;
     glShaderSource(vshader, 1, vertexShaderStrings, NULL);
@@ -172,6 +173,42 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 		printf("Program object linking error %s\n", str);
 	}
 
+    shadeshader = glCreateShader(GL_FRAGMENT_SHADER);
+
+    const char *shadeShaderStrings[1];
+    // glShaderSource(shader, GLsizei count, const GLchar **string, const GLint *length);
+    unsigned char *shadeShaderAssembly = readShaderFile( "../src/shader/shadeshader.frag" );
+    shadeShaderStrings[0] = (char*)shadeShaderAssembly;
+    glShaderSource(shadeshader, 1, shadeShaderStrings, NULL);
+    glCompileShader(shadeshader);
+    free((void *)shadeShaderAssembly);
+
+    success = 0;
+    glGetShaderiv(fshader, GL_COMPILE_STATUS, &success);
+
+    if(success  == GL_FALSE)
+  	{
+        char str[4096];
+        glGetShaderInfoLog(fshader, sizeof(str), NULL, str);
+        printf("Frag shader compile error %s\n", str);
+  	}
+
+    shadeobject = glCreateProgram();
+
+    glAttachShader( shadeobject, vshader );
+    glAttachShader( shadeobject, shadeshader );
+
+    glLinkProgram( shadeobject );
+
+    glGetProgramiv( shadeobject, GL_LINK_STATUS, &shadersLinked );
+
+    if( shadersLinked == GL_FALSE )
+	{
+        char str[4096];
+		glGetProgramInfoLog( shadeobject, sizeof(str), NULL, str );
+		printf("Program object linking error %s\n", str);
+	}
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -193,9 +230,6 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     // texture coord attribute
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
-
-
-    glGenTextures(1, &TextureID);
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
@@ -246,7 +280,26 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
                     }
                 }
             }
-            glBindTexture(GL_TEXTURE_2D, TextureID);
+
+            const int passes = ceil(log2(fmax(WINDOW_WIDTH, WINDOW_HEIGHT)));
+            
+
+            // renderA 
+            // renderB
+            // let currentOutput = renderA;
+
+            // for (let i = 0; i < passes; i++) {
+            // plane.material.uniforms.inputTexture.value = currentInput;
+            // plane.material.uniforms.uOffset.value = Math.pow(2, passes - i - 1);
+
+            // renderer.setRenderTarget(currentOutput);
+            // render();
+
+            // currentInput = currentOutput.texture;
+            // currentOutput = (currentOutput === renderA) ? renderB : renderA;
+            // }
+
+
         }
     }
 
@@ -276,12 +329,25 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
+    // GLuint buffer;
+    // glGenFramebuffers(1, buffer);
 
     glEnable(GL_TEXTURE_2D);
 
     glUseProgram( pobject );
 
-    glBindVertexArray(VAO);
+
+    // glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
+    // glBindFramebuffer( GL_TEXTURE_2D,
+    //     GLuint framebuffer);
+
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    glUseProgram( shadeobject );
+
+    // glBindFramebuffer()
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     SDL_GL_SwapWindow(window);
