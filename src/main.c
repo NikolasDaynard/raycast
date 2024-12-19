@@ -8,6 +8,7 @@
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 #define SDL_MAIN_USE_CALLBACKS 1  /* use the callbacks instead of main() */
+#define GL_GLEXT_PROTOTYPES 1
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -15,6 +16,8 @@
 #include <SDL3/SDL_opengl.h>
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
+
 #include "raycasting/raycast.c"
 
 /* We will use this renderer to draw into this window every frame. */
@@ -26,7 +29,33 @@ static SDL_GLContext context = NULL;
 static int texture_width = 0;
 static int texture_height = 0;
 bool clickingLMB = false;
+GLuint vshader = 0;
+GLuint fshader = 0;
 
+long filelength(FILE *file) {
+    long numbytes;
+    long savedpos = ftell(file);
+    fseek(file, 0, SEEK_END);
+    numbytes = ftell(file);
+    fseek(file, savedpos, SEEK_SET);
+    return numbytes;
+}
+
+unsigned char* readShaderFile(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if(file == NULL)
+    {
+        printf("ERROR Cannot open shader file!");
+  		  return 0;
+    }
+    int bytesinfile = filelength(file);
+    unsigned char *buffer = (unsigned char*)malloc(bytesinfile+1);
+    int bytesread = fread( buffer, 1, bytesinfile, file);
+    buffer[bytesread] = 0; // Terminate the string with 0
+    fclose(file);
+    
+    return buffer;
+}
 
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
@@ -59,6 +88,46 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     }
 
     context = SDL_GL_CreateContext(window);
+
+    vshader = glCreateShader(GL_VERTEX_SHADER);
+
+    const char *vertexShaderStrings[1];
+    // glShaderSource(shader, GLsizei count, const GLchar **string, const GLint *length);
+    unsigned char *vertexShaderAssembly = readShaderFile( "../src/shader/shader.vert" );
+    vertexShaderStrings[0] = (char*)vertexShaderAssembly;
+    glShaderSource(vshader, 1, vertexShaderStrings, NULL);
+    glCompileShader(vshader);
+    free((void *)vertexShaderAssembly);
+
+    GLint success = 0;
+    glGetShaderiv(vshader, GL_COMPILE_STATUS, &success);
+
+    if(success  == GL_FALSE)
+  	{
+        char str[4096];
+        glGetShaderInfoLog(vshader, sizeof(str), NULL, str);
+        printf("Vert shader compile error %s\n", str);
+  	}
+
+    fshader = glCreateShader(GL_FRAGMENT_SHADER);
+
+    const char *fragShaderStrings[1];
+    // glShaderSource(shader, GLsizei count, const GLchar **string, const GLint *length);
+    unsigned char *fragShaderAssembly = readShaderFile( "../src/shader/shader.frag" );
+    fragShaderStrings[0] = (char*)fragShaderAssembly;
+    glShaderSource(fshader, 1, fragShaderStrings, NULL);
+    glCompileShader(fshader);
+    free((void *)fragShaderAssembly);
+
+    success = 0;
+    glGetShaderiv(fshader, GL_COMPILE_STATUS, &success);
+
+    if(success  == GL_FALSE)
+  	{
+        char str[4096];
+        glGetShaderInfoLog(fshader, sizeof(str), NULL, str);
+        printf("Frag shader compile error %s\n", str);
+  	}
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
@@ -104,6 +173,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
             }
         }
     }
+
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
 
@@ -143,6 +213,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         int H = 1;
 
         glEnable(GL_TEXTURE_2D);
+        
         glBegin(GL_QUADS);
             glTexCoord2f(0, 0); glVertex3f(X, Y, 0);
             glTexCoord2f(1, 0); glVertex3f(X + W, Y, 0);
