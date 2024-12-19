@@ -34,8 +34,8 @@ GLuint fshader = 0;
 GLuint pobject = 0;
 float vertices[] = {
     // positions          // colors           // texture coords
-        1.0f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-        1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+    1.0f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+    1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
     -1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
     -1.0f,  1.0f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
 };
@@ -84,7 +84,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
     for (int i = 0; i < WINDOW_WIDTH - 1; i ++) {
         for (int j = 0; j < WINDOW_HEIGHT - 1; j ++) {
-            SDL_WriteSurfacePixel(surface, i, j, 128, 33, 192, 255);
+            SDL_WriteSurfacePixel(surface, i, j, 128, 33, 192, 0);
         }
     }
     printf("w%d\n", surface->w);
@@ -254,7 +254,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glClearColor(0.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // these performance bad
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -271,10 +271,10 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     SDL_GL_SwapWindow(window);
 
 
-    // SDL_Delay(15);
+    SDL_Delay(15);
     // printf("%d click \n", clickingLMB);
     fpsCounter++;
-    if (SDL_GetTicks() - fps > 100) {
+    if (SDL_GetTicks() - fps > 1000) {
         printf("%ld fps\n", fpsCounter);
         fps = SDL_GetTicks();
         fpsCounter = 0;
