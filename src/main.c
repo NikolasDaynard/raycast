@@ -32,7 +32,21 @@ bool clickingLMB = false;
 GLuint vshader = 0;
 GLuint fshader = 0;
 GLuint pobject = 0;
-GLuint quadList;
+float vertices[] = {
+    // positions          // colors           // texture coords
+        1.0f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+        1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+    -1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+    -1.0f,  1.0f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+};
+unsigned int indices[] = {  
+    0, 1, 3, // first triangle
+    1, 2, 3  // second triangle
+};
+unsigned int VBO, VAO, EBO;
+GLuint TextureID = 0;
+Uint64 fps;
+Uint64 fpsCounter;
 
 long filelength(FILE *file) {
     long numbytes;
@@ -57,25 +71,6 @@ unsigned char* readShaderFile(const char *filename) {
     fclose(file);
     
     return buffer;
-}
-
-void initQuadList(GLuint *listID)
-{
-  *listID = glGenLists(1);
-  
-  glNewList(*listID, GL_COMPILE);
-    glColor3f(1.0f, 1.0f, 1.0f); // White base color
-    glBegin(GL_TRIANGLE_STRIP);
-      glTexCoord2f(0.0f, 0.0f);
-      glVertex3f(-1.0f, -1.0f, 0.0f);
-      glTexCoord2f(1.0f, 0.0f);
-      glVertex3f(1.0f, -1.0f, 0.0f);
-      glTexCoord2f(0.0f, 1.0f);
-      glVertex3f(-1.0f, 1.0f, 0.0f);
-      glTexCoord2f(1.0f, 1.0f);
-      glVertex3f(1.0f, 1.0f, 0.0f);
-    glEnd();
-  glEndList();
 }
 
 /* This function runs once at startup. */
@@ -168,7 +163,30 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 		printf("Program object linking error %s\n", str);
 	}
 
-    initQuadList(&quadList);
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    // texture coord attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+
+    glGenTextures(1, &TextureID);
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
@@ -212,6 +230,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
                     }
                 }
             }
+            glBindTexture(GL_TEXTURE_2D, TextureID);
         }
     }
 
@@ -221,86 +240,45 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
-    // SDL_Texture *target_texture = SDL_CreateTextureFromSurface(renderer, surface);
-        GLuint TextureID = 0;
-        glGenTextures(1, &TextureID);
-        
-        int Mode = GL_RGB;
-        
-        if(surface->format == SDL_PIXELFORMAT_RGBA32) {
-            Mode = GL_RGBA;
-        }
-        
+   
+    int Mode = GL_RGB;
+    
+    if(surface->format == SDL_PIXELFORMAT_RGBA32) {
+        Mode = GL_RGBA;
+    }
+    
 
-        // For Ortho mode, of course
-        // glViewport(-WINDOW_WIDTH, -WINDOW_HEIGHT, WINDOW_WIDTH * 2, WINDOW_HEIGHT * 2);
-        glOrtho(0,surface->w,surface->h,0,-1,1); //Set the matrix
-        glClearColor(0.f, 0.f, 0.f, 1.f);
-        glClear(GL_COLOR_BUFFER_BIT);
+    // For Ortho mode, of course
+    // glViewport(-WINDOW_WIDTH, -WINDOW_HEIGHT, WINDOW_WIDTH * 2, WINDOW_HEIGHT * 2);
+    glOrtho(0,surface->w,surface->h,0,-1,1); //Set the matrix
+    glClearColor(0.f, 0.f, 0.f, 1.f);
+    glClear(GL_COLOR_BUFFER_BIT);
 
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-        glBindTexture(GL_TEXTURE_2D, TextureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
 
+    glEnable(GL_TEXTURE_2D);
 
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    float vertices[] = {
-        // positions          // colors           // texture coords
-         1.0f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-         1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-        -1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-        -1.0f,  1.0f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
-    };
-    unsigned int indices[] = {  
-        0, 1, 3, // first triangle
-        1, 2, 3  // second triangle
-    };
-    unsigned int VBO, VAO, EBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    glUseProgram( pobject );
 
     glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    // texture coord attribute
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
-
-        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-        glEnable(GL_TEXTURE_2D);
-
-        glUseProgram( pobject );
-
-        // glPushMatrix();
-        //     glCallList( quadList );
-        // glPopMatrix();
+    SDL_GL_SwapWindow(window);
 
 
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-        SDL_GL_SwapWindow(window);
-
-
-        SDL_Delay(15);
-        // printf("%d click \n", clickingLMB);
+    // SDL_Delay(15);
+    // printf("%d click \n", clickingLMB);
+    fpsCounter++;
+    if (SDL_GetTicks() - fps > 100) {
+        printf("%ld fps\n", fpsCounter);
+        fps = SDL_GetTicks();
+        fpsCounter = 0;
+    }
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
