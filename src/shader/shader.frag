@@ -21,8 +21,9 @@ vec4 raymarch() {
         return light;
     }
     const int rayCount = 8;
-    const int maxSteps = 32;
-    const float TAU = 6.283185307179586;
+    const int maxSteps = 640;
+    const float PI = 3.14159265;
+    const float TAU = 2.0 * PI;
     float oneOverRayCount = 1.0 / float(rayCount);
     float tauOverRayCount = TAU * oneOverRayCount;
 
@@ -33,7 +34,7 @@ vec4 raymarch() {
 
     for(int i = 0; i < rayCount; i++) {
         float angle = tauOverRayCount * (float(i) + noise);
-        vec2 rayDirectionUv = vec2(cos(angle), -sin(angle)) / 640.0; // 100.0 is size TODO
+        vec2 rayDirectionUv = vec2(cos(angle), -sin(angle)) / (640.0); // 100.0 is size TODO
 
         // Our current position, plus one step.
         vec2 sampleUv = TexCoord + rayDirectionUv;
@@ -57,5 +58,5 @@ void main()
 {
     // FragColor = texture(ourTexture, TexCoord);
     // FragColor = vec4(TexCoord.x, TexCoord.y, 0.2, 1.0);
-    FragColor = raymarch();
+    gl_FragColor = vec4(raymarch().rgb, 1.0);
 }
