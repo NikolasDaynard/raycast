@@ -20,8 +20,8 @@ vec4 raymarch() {
     if (light.a > 0.1) {
         return light;
     }
-    const int rayCount = 10;
-    const int maxSteps = 320;
+    const int rayCount = 8;
+    const int maxSteps = 32;
     const float TAU = 6.283185307179586;
     float oneOverRayCount = 1.0 / float(rayCount);
     float tauOverRayCount = TAU * oneOverRayCount;
@@ -40,13 +40,13 @@ vec4 raymarch() {
 
         for (int step = 0; step < maxSteps; step++) {
             if (outOfBounds(sampleUv)) break;
-                vec4 sampleLight = texture(ourTexture, sampleUv);
-                if (sampleLight.a > 0.1) {
-                    radiance += sampleLight;
-                    break;
-                }
+            vec4 sampleLight = texture(ourTexture, sampleUv);
+            if (sampleLight.a > 0.1) {
+                radiance += sampleLight;
+                break;
+            }
 
-                sampleUv += rayDirectionUv;
+            sampleUv += rayDirectionUv;
         }
     }
     return radiance * oneOverRayCount;

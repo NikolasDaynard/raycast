@@ -73,6 +73,15 @@ unsigned char* readShaderFile(const char *filename) {
     return buffer;
 }
 
+int colors[][3] = {
+    {0, 0, 0},
+    {128, 0, 0},
+    {255, 0, 255},
+    {255, 255, 255},
+    {255, 128, 128},
+};
+int colorIndex = 0;
+
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
@@ -84,7 +93,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
     for (int i = 0; i < WINDOW_WIDTH - 1; i ++) {
         for (int j = 0; j < WINDOW_HEIGHT - 1; j ++) {
-            SDL_WriteSurfacePixel(surface, i, j, 128, 33, 192, 0);
+            SDL_WriteSurfacePixel(surface, i, j, 0, 0, 0, 0);
         }
     }
     printf("w%d\n", surface->w);
@@ -205,6 +214,13 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
         // if (event->key.key == SDLK_RIGHT) {
         //     TEST_X -= 1;
         // }
+        if (event->key.key == SDLK_SPACE) {
+            colorIndex++;
+            if (colorIndex > sizeof(colors) / sizeof(colors[0])) {
+                colorIndex = 0;
+            }
+            printf ("switched to color %d, %d, %d\n", colors[colorIndex][0], colors[colorIndex][1], colors[colorIndex][2]);
+        }
     }
 
     // mouse
@@ -226,7 +242,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
                         break;
                     }
                     if (sqrt(pow(i - x_pos, 2) + pow(j - y_pos, 2)) < radius) {
-                        SDL_WriteSurfacePixel(surface, i, j, 128, 0, 0, 255);
+                        SDL_WriteSurfacePixel(surface, i, j, colors[colorIndex][0], colors[colorIndex][1], colors[colorIndex][2], 255);
                     }
                 }
             }
