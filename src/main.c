@@ -93,7 +93,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
     vshader = ren_createShader("../src/shader/shader.vert", GL_VERTEX_SHADER);
 
-    fshader = ren_createShader("../src/shader/shader.frag", GL_FRAGMENT_SHADER);
+    fshader = ren_createShader("../src/shader/simple_raymarch.frag", GL_FRAGMENT_SHADER);
     shadeshader = ren_createShader("../src/shader/shadeshader.frag", GL_FRAGMENT_SHADER);
 
     // Create a program object and attach the two compiled shaders.
@@ -250,11 +250,6 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     SDL_GL_SwapWindow(window);
 
     glDeleteFramebuffers(1, &framebuffer);  
-
-
-
-
-
 
     SDL_Delay(15);
     // printf("%d click \n", clickingLMB);
