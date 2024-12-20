@@ -8,7 +8,6 @@
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 #define SDL_MAIN_USE_CALLBACKS 1  /* use the callbacks instead of main() */
-#define GL_GLEXT_PROTOTYPES 1
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -95,42 +94,12 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     vshader = ren_createShader("../src/shader/shader.vert", GL_VERTEX_SHADER);
 
     fshader = ren_createShader("../src/shader/shader.frag", GL_FRAGMENT_SHADER);
-
-    // Create a program object and attach the two compiled shaders.
-    pobject = glCreateProgram();
-    glAttachShader( pobject, vshader );
-    glAttachShader( pobject, fshader );
-
-    // Link the program object and print out the info log.
-    glLinkProgram( pobject );
-
-    GLint shadersLinked;
-    glGetProgramiv( pobject, GL_LINK_STATUS, &shadersLinked );
-
-    if( shadersLinked == GL_FALSE )
-	{
-        char str[4096];
-		glGetProgramInfoLog( pobject, sizeof(str), NULL, str );
-		printf("Program object linking error %s\n", str);
-	}
-
     shadeshader = ren_createShader("../src/shader/shadeshader.frag", GL_FRAGMENT_SHADER);
 
-    shadeobject = glCreateProgram();
+    // Create a program object and attach the two compiled shaders.
+    pobject = ren_createProgram((GLuint[]){vshader, fshader});
 
-    glAttachShader( shadeobject, vshader );
-    glAttachShader( shadeobject, shadeshader );
-
-    glLinkProgram( shadeobject );
-
-    glGetProgramiv( shadeobject, GL_LINK_STATUS, &shadersLinked );
-
-    if( shadersLinked == GL_FALSE )
-	{
-        char str[4096];
-		glGetProgramInfoLog( shadeobject, sizeof(str), NULL, str );
-		printf("Program object linking error %s\n", str);
-	}
+    shadeobject = ren_createProgram((GLuint[]){vshader, shadeshader});
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);

@@ -10,8 +10,11 @@ set(CMAKE_PREFIX_PATH "/nix/store/jkjmp40sysaqns8j9nqkhvsyw4i9hmqd-sdl3-3.1.6-de
 find_package(SDL3 REQUIRED)
 find_package(OpenGL REQUIRED)
 
+add_compile_definitions(GL_GLEXT_PROTOTYPES=1)
+
 # Add your executable
-add_executable(raycast src/main.c)
+file(GLOB_RECURSE SOURCES "src/*.c")
+add_executable(raycast ${SOURCES})
 
 # Link SDL3 libraries
 target_link_libraries(raycast PRIVATE SDL3::SDL3)

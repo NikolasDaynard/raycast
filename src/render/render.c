@@ -1,5 +1,6 @@
-#include "render.h"
+#include <malloc.h>
 #include <stdio.h>
+#include "render.h"
 
 GLuint ren_createTexture() {
     GLuint new_texture; // create init texture
@@ -76,4 +77,26 @@ GLuint ren_createShader(const char *filename, GLenum type) {
   	}
 
     return new_shader;
+}
+
+GLuint ren_createProgram(GLuint *shaders) {
+    GLuint new_program = glCreateProgram();
+
+    for (int i = 0; i < sizeof(shaders) / sizeof(shaders[0]); i++) {
+        glAttachShader(new_program, shaders[i]);
+    }
+
+    glLinkProgram(new_program);
+
+    GLint shadersLinked;
+    glGetProgramiv( new_program, GL_LINK_STATUS, &shadersLinked );
+
+    if( shadersLinked == GL_FALSE )
+	{
+        char str[4096];
+		glGetProgramInfoLog( new_program, sizeof(str), NULL, str );
+		printf("Program object linking error %s\n", str);
+	}
+
+    return new_program;
 }
