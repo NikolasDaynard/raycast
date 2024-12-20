@@ -322,8 +322,9 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glOrtho(0,surface->w,surface->h,0,-1,1); //Set the matrix
     glClearColor(0.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT);
+    glEnable(GL_TEXTURE_2D);
 
-    GLuint seed_texture;
+    GLuint seed_texture; // create init texture
     glGenTextures(1, &seed_texture);
     glBindTexture(GL_TEXTURE_2D, seed_texture);
 
@@ -334,44 +335,34 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
 
-    glEnable(GL_TEXTURE_2D);
-
-
     GLuint framebuffer;
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer( GL_FRAMEBUFFER, framebuffer);
 
-
-    GLuint texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
-
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, seed_texture, 0);
 
     glUseProgram( pobject );
-
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-
-
+    // second renderpass
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    // glBindTexture(GL_TEXTURE_2D, seed_texture);
 
-    // // Set the sampler uniform in your shader
+    // Set the sampler uniform in your shader
     glUseProgram(shadeobject);  // Use your shader program
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     SDL_GL_SwapWindow(window);
 
-    // glDeleteFramebuffers(1, &buffer);  
+    glDeleteFramebuffers(1, &framebuffer);  
 
-    SDL_Delay(15);
+
+
+
+
+
+    SDL_Delay(150);
     // printf("%d click \n", clickingLMB);
     fpsCounter++;
     if (SDL_GetTicks() - fps > 1000) {
