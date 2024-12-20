@@ -329,6 +329,18 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_TEXTURE_2D);
 
+    GLuint read_texture; // create init texture
+    glGenTextures(1, &read_texture);
+    glBindTexture(GL_TEXTURE_2D, read_texture);
+
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // these performance bad
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
+
+
     GLuint seed_texture; // create init texture
     glGenTextures(1, &seed_texture);
     glBindTexture(GL_TEXTURE_2D, seed_texture);
@@ -342,6 +354,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
     glBindFramebuffer( GL_FRAMEBUFFER, framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, seed_texture, 0);
+
+    glBindTexture(GL_TEXTURE_2D, read_texture);
 
     glUseProgram( pobject );
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

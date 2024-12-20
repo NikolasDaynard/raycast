@@ -28,7 +28,7 @@ vec4 raymarch() {
     float tauOverRayCount = TAU * oneOverRayCount;
 
     // Distinct random value for every pixel
-    float noise = 1.0;
+    float noise = rand(TexCoord);
 
     vec4 radiance = vec4(0.0);
 
