@@ -28,7 +28,7 @@ vec4 raymarch() {
     float tauOverRayCount = TAU * oneOverRayCount;
 
     // Distinct random value for every pixel
-    float noise = rand(TexCoord);
+    float noise = 1.0;
 
     vec4 radiance = vec4(0.0);
 
@@ -56,7 +56,8 @@ vec4 raymarch() {
 
 void main()
 {
-    // FragColor = texture(ourTexture, TexCoord);
+    // FragColor = (texture(ourTexture, TexCoord) + texture(ourTexture, TexCoord + vec2(0.1, 0.1))) / 2.0;
+    // FragColor = texture(ourTexture, TexCoord) + ;
     // FragColor = vec4(TexCoord.x, TexCoord.y, 0.2, 1.0);
     gl_FragColor = vec4(raymarch().rgb, 1.0);
 }

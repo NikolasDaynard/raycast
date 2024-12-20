@@ -35,6 +35,7 @@ GLuint fshader = 0;
 GLuint shadeshader = 0;
 GLuint pobject = 0;
 GLuint shadeobject = 0;
+GLuint framebuffer;
 float vertices[] = {
     // positions          // colors           // texture coords
     1.0f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
@@ -231,6 +232,10 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
+    glGenFramebuffers(1, &framebuffer);
+
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
 
@@ -335,10 +340,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
 
-    GLuint framebuffer;
-    glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer( GL_FRAMEBUFFER, framebuffer);
-
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, seed_texture, 0);
 
     glUseProgram( pobject );
@@ -346,10 +348,9 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
     // second renderpass
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    // glBindTexture(GL_TEXTURE_2D, seed_texture);
+    glBindTexture(GL_TEXTURE_2D, seed_texture);
 
-    // Set the sampler uniform in your shader
-    glUseProgram(shadeobject);  // Use your shader program
+    glUseProgram(shadeobject);  
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -362,7 +363,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 
 
-    SDL_Delay(150);
+    SDL_Delay(15);
     // printf("%d click \n", clickingLMB);
     fpsCounter++;
     if (SDL_GetTicks() - fps > 1000) {
