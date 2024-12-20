@@ -92,44 +92,9 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
     context = SDL_GL_CreateContext(window);
 
-    vshader = glCreateShader(GL_VERTEX_SHADER);
+    vshader = ren_createShader("../src/shader/shader.vert", GL_VERTEX_SHADER);
 
-    const char *vertexShaderStrings[1];
-    unsigned char *vertexShaderAssembly = readShaderFile( "../src/shader/shader.vert" );
-    vertexShaderStrings[0] = (char*)vertexShaderAssembly;
-    glShaderSource(vshader, 1, vertexShaderStrings, NULL);
-    glCompileShader(vshader);
-    free((void *)vertexShaderAssembly);
-
-    GLint success = 0;
-    glGetShaderiv(vshader, GL_COMPILE_STATUS, &success);
-
-    if(success  == GL_FALSE)
-  	{
-        char str[4096];
-        glGetShaderInfoLog(vshader, sizeof(str), NULL, str);
-        printf("Vert shader compile error %s\n", str);
-  	}
-
-    fshader = glCreateShader(GL_FRAGMENT_SHADER);
-
-    const char *fragShaderStrings[1];
-    // glShaderSource(shader, GLsizei count, const GLchar **string, const GLint *length);
-    unsigned char *fragShaderAssembly = readShaderFile( "../src/shader/shader.frag" );
-    fragShaderStrings[0] = (char*)fragShaderAssembly;
-    glShaderSource(fshader, 1, fragShaderStrings, NULL);
-    glCompileShader(fshader);
-    free((void *)fragShaderAssembly);
-
-    success = 0;
-    glGetShaderiv(fshader, GL_COMPILE_STATUS, &success);
-
-    if(success  == GL_FALSE)
-  	{
-        char str[4096];
-        glGetShaderInfoLog(fshader, sizeof(str), NULL, str);
-        printf("Frag shader compile error %s\n", str);
-  	}
+    fshader = ren_createShader("../src/shader/shader.frag", GL_FRAGMENT_SHADER);
 
     // Create a program object and attach the two compiled shaders.
     pobject = glCreateProgram();
@@ -149,25 +114,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 		printf("Program object linking error %s\n", str);
 	}
 
-    shadeshader = glCreateShader(GL_FRAGMENT_SHADER);
-
-    const char *shadeShaderStrings[1];
-    // glShaderSource(shader, GLsizei count, const GLchar **string, const GLint *length);
-    unsigned char *shadeShaderAssembly = readShaderFile( "../src/shader/shadeshader.frag" );
-    shadeShaderStrings[0] = (char*)shadeShaderAssembly;
-    glShaderSource(shadeshader, 1, shadeShaderStrings, NULL);
-    glCompileShader(shadeshader);
-    free((void *)shadeShaderAssembly);
-
-    success = 0;
-    glGetShaderiv(fshader, GL_COMPILE_STATUS, &success);
-
-    if(success  == GL_FALSE)
-  	{
-        char str[4096];
-        glGetShaderInfoLog(fshader, sizeof(str), NULL, str);
-        printf("Frag shader compile error %s\n", str);
-  	}
+    shadeshader = ren_createShader("../src/shader/shadeshader.frag", GL_FRAGMENT_SHADER);
 
     shadeobject = glCreateProgram();
 

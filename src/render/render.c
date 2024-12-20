@@ -39,23 +39,41 @@ unsigned char* readShaderFile(const char *filename) {
     return buffer;
 }
 
-GLuint ren_createShader(const char *filename) {
-    GLuint new_shader = glCreateShader(GL_VERTEX_SHADER);
+GLuint ren_createShader(const char *filename, GLenum type) {
+    GLuint new_shader = glCreateShader(type);
 
-    const char *vertexShaderStrings[1];
-    unsigned char *vertexShaderAssembly = readShaderFile(filename);
-    vertexShaderStrings[0] = (char*)vertexShaderAssembly;
-    glShaderSource(new_shader, 1, vertexShaderStrings, NULL);
+    const char *shaderStrings[1];
+    unsigned char *shaderAssembly = readShaderFile(filename);
+    shaderStrings[0] = (char*)shaderAssembly;
+    glShaderSource(new_shader, 1, shaderStrings, NULL);
     glCompileShader(new_shader);
-    free((void *)vertexShaderAssembly);
+    free((void *)shaderAssembly);
 
     GLint success = 0;
     glGetShaderiv(new_shader, GL_COMPILE_STATUS, &success);
 
-    if(success  == GL_FALSE)
+    if(success == GL_FALSE)
   	{
         char str[4096];
         glGetShaderInfoLog(new_shader, sizeof(str), NULL, str);
-        printf("Shader compile error %s\n in file %s\n", str, filename);
+
+        switch (type) {
+            case GL_VERTEX_SHADER:
+                printf("Vertex s");
+                break;
+            case GL_FRAGMENT_SHADER:
+                printf("Fragment s");
+                break;
+            case GL_COMPUTE_SHADER:
+                printf("Compute s");
+                break;
+            default:
+                printf("S");
+                break;
+        }
+ 
+        printf("hader compile error %sin file %s\n", str, filename);
   	}
+
+    return new_shader;
 }
