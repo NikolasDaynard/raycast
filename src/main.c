@@ -18,7 +18,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include "raycasting/raycast.c"
+#include "render/render.h"
 
 /* We will use this renderer to draw into this window every frame. */
 static SDL_Window *window = NULL;
@@ -50,31 +50,6 @@ unsigned int indices[] = {
 unsigned int VBO, VAO, EBO;
 Uint64 fps;
 Uint64 fpsCounter;
-
-long filelength(FILE *file) {
-    long numbytes;
-    long savedpos = ftell(file);
-    fseek(file, 0, SEEK_END);
-    numbytes = ftell(file);
-    fseek(file, savedpos, SEEK_SET);
-    return numbytes;
-}
-
-unsigned char* readShaderFile(const char *filename) {
-    FILE *file = fopen(filename, "r");
-    if(file == NULL)
-    {
-        printf("ERROR Cannot open shader file!");
-  		  return 0;
-    }
-    int bytesinfile = filelength(file);
-    unsigned char *buffer = (unsigned char*)malloc(bytesinfile+1);
-    int bytesread = fread( buffer, 1, bytesinfile, file);
-    buffer[bytesread] = 0; // Terminate the string with 0
-    fclose(file);
-    
-    return buffer;
-}
 
 int colors[][3] = {
     {0, 0, 0},
@@ -329,40 +304,28 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_TEXTURE_2D);
 
-    GLuint read_texture; // create init texture
-    glGenTextures(1, &read_texture);
-    glBindTexture(GL_TEXTURE_2D, read_texture);
-
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // these performance bad
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
+    GLuint input_texture = ren_createTexture(); // create texture to read from (input)
+    // bind sdl surface to it
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
 
+    GLuint output_texture = ren_createTexture(); // create texture to write to (output)
+    // bind new empty texture
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
 
-    GLuint seed_texture; // create init texture
-    glGenTextures(1, &seed_texture);
-    glBindTexture(GL_TEXTURE_2D, seed_texture);
+    // set render target
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    // set the output buffer texture
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output_texture, 0);
 
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // these performance bad
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // assign sampler texture
+    glBindTexture(GL_TEXTURE_2D, input_texture);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
-
-    glBindFramebuffer( GL_FRAMEBUFFER, framebuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, seed_texture, 0);
-
-    glBindTexture(GL_TEXTURE_2D, read_texture);
-
-    glUseProgram( pobject );
+    glUseProgram(pobject);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     // second renderpass
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, seed_texture);
+    glBindTexture(GL_TEXTURE_2D, output_texture);
 
     glUseProgram(shadeobject);  
 

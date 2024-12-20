@@ -6,6 +6,7 @@
         "*.tcc": "c",
         "sdl_video.h": "c",
         "sdl_opengl.h": "c",
-        "sdl_opengl_glext.h": "c"
+        "sdl_opengl_glext.h": "c",
+        "render.h": "c"
     }
 }
