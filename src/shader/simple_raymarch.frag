@@ -57,7 +57,7 @@ vec4 raymarch() {
 void main()
 {
     // FragColor = (texture(ourTexture, TexCoord) + texture(ourTexture, TexCoord + vec2(0.1, 0.1))) / 2.0;
-    // FragColor = texture(ourTexture, TexCoord) + ;
+    // FragColor = texture(ourTexture, TexCoord) + 0.1;
     // FragColor = vec4(TexCoord.x, TexCoord.y, 0.2, 1.0);
-    gl_FragColor = vec4(raymarch().rgb, 1.0);
+    FragColor = vec4(raymarch().rgb, 1.0);
 }

@@ -223,21 +223,27 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     GLuint input_texture = ren_createTexture(); // create texture to read from (input)
     // bind sdl surface to it
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
+    GLuint output_texture;
 
-    GLuint output_texture = ren_createTexture(); // create texture to write to (output)
-    // bind new empty texture
-    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
+    int NUM_PASSES = 8;
 
-    // set render target
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    // set the output buffer texture
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output_texture, 0);
+    for (int i = 0; i < NUM_PASSES; i ++) {
+        output_texture = ren_createTexture(); // create texture to write to (output)
+        // bind new empty texture
+        glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
 
-    // assign sampler texture
-    glBindTexture(GL_TEXTURE_2D, input_texture);
+        // set render target
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        // set the output buffer texture
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output_texture, 0);
 
-    glUseProgram(pobject);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        // assign sampler texture
+        glBindTexture(GL_TEXTURE_2D, input_texture);
+
+        glUseProgram(pobject);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        input_texture = output_texture;
+    }
 
     // second renderpass
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
