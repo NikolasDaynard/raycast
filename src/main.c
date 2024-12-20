@@ -31,9 +31,13 @@ static int texture_height = 0;
 bool clickingLMB = false;
 GLuint vshader = 0;
 GLuint fshader = 0;
+GLuint jfashader = 0;
 GLuint shadeshader = 0;
+GLuint seedshader = 0;
 GLuint pobject = 0;
 GLuint shadeobject = 0;
+GLuint jfaobject = 0;
+GLuint seedobject = 0;
 GLuint framebuffer;
 float vertices[] = {
     // positions          // colors           // texture coords
@@ -95,11 +99,14 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
     fshader = ren_createShader("../src/shader/simple_raymarch.frag", GL_FRAGMENT_SHADER);
     shadeshader = ren_createShader("../src/shader/shadeshader.frag", GL_FRAGMENT_SHADER);
+    jfashader = ren_createShader("../src/shader/jfa.frag", GL_FRAGMENT_SHADER);
+    seedshader = ren_createShader("../src/shader/seed.frag", GL_FRAGMENT_SHADER);
 
     // Create a program object and attach the two compiled shaders.
     pobject = ren_createProgram((GLuint[]){vshader, fshader});
-
     shadeobject = ren_createProgram((GLuint[]){vshader, shadeshader});
+    jfaobject = ren_createProgram((GLuint[]){vshader, jfashader});
+    seedobject = ren_createProgram((GLuint[]){vshader, seedshader});
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -176,26 +183,6 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
                     }
                 }
             }
-
-            const int passes = ceil(log2(fmax(WINDOW_WIDTH, WINDOW_HEIGHT)));
-            
-
-            // renderA 
-            // renderB
-            // let currentOutput = renderA;
-
-            // for (let i = 0; i < passes; i++) {
-            // plane.material.uniforms.inputTexture.value = currentInput;
-            // plane.material.uniforms.uOffset.value = Math.pow(2, passes - i - 1);
-
-            // renderer.setRenderTarget(currentOutput);
-            // render();
-
-            // currentInput = currentOutput.texture;
-            // currentOutput = (currentOutput === renderA) ? renderB : renderA;
-            // }
-
-
         }
     }
 
@@ -225,7 +212,27 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
     GLuint output_texture;
 
-    int NUM_PASSES = 8;
+    //seed pass, convert to uv map colors
+
+    output_texture = ren_createTexture(); // create texture to write to (output)
+    // bind new empty texture
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
+
+    // set render target
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    // set the output buffer texture
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output_texture, 0);
+
+    // assign sampler texture
+    glBindTexture(GL_TEXTURE_2D, input_texture);
+
+    glUseProgram(seedobject);
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    input_texture = output_texture;
+
+
+    const int NUM_PASSES = ceil(log2(fmax(WINDOW_WIDTH, WINDOW_HEIGHT)));
 
     for (int i = 0; i < NUM_PASSES; i ++) {
         output_texture = ren_createTexture(); // create texture to write to (output)
@@ -240,7 +247,15 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         // assign sampler texture
         glBindTexture(GL_TEXTURE_2D, input_texture);
 
-        glUseProgram(pobject);
+        glUseProgram(jfaobject);
+
+        GLuint uOffset = glGetUniformLocation(jfaobject, "uOffset");
+        GLfloat lightPos = pow(2, NUM_PASSES - i - 1);
+        glUniform1f(uOffset, lightPos);
+
+        GLuint oneOverSize = glGetUniformLocation(jfaobject, "oneOverSize");
+        glUniform2f(oneOverSize, (1.0 / (float)surface->w), (1.0 / (float)surface->h));
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         input_texture = output_texture;
     }

@@ -28,7 +28,7 @@ unsigned char* readShaderFile(const char *filename) {
     FILE *file = fopen(filename, "r");
     if(file == NULL)
     {
-        printf("ERROR Cannot open shader file!");
+        printf("ERROR Cannot open shader file!\n");
   		  return 0;
     }
     int bytesinfile = filelength(file);
