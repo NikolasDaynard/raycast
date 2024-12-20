@@ -233,7 +233,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         glUniform2f(oneOverSize, (1.0 / (float)surface->w), (1.0 / (float)surface->h));
 
         GLuint isSeed = glGetUniformLocation(jfaobject, "isSeed");
-        glUniform1f(isSeed, i == 0);
+        glUniform1f(isSeed, (i == 0));
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         input_texture = output_texture;
