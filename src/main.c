@@ -30,12 +30,18 @@ static int texture_width = 0;
 static int texture_height = 0;
 bool clickingLMB = false;
 GLuint vshader = 0;
+
 GLuint fshader = 0;
-GLuint jfashader = 0;
-GLuint shadeshader = 0;
 GLuint pobject = 0;
+
+GLuint shadeshader = 0;
 GLuint shadeobject = 0;
+
+GLuint jfashader = 0;
 GLuint jfaobject = 0;
+
+GLuint distshader = 0;
+GLuint distobject = 0;
 GLuint framebuffer;
 float vertices[] = {
     // positions          // colors           // texture coords
@@ -98,11 +104,13 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     fshader = ren_createShader("../src/shader/simple_raymarch.frag", GL_FRAGMENT_SHADER);
     shadeshader = ren_createShader("../src/shader/shadeshader.frag", GL_FRAGMENT_SHADER);
     jfashader = ren_createShader("../src/shader/jfa.frag", GL_FRAGMENT_SHADER);
+    distshader = ren_createShader("../src/shader/jfa_dist.frag", GL_FRAGMENT_SHADER);
 
     // Create a program object and attach the two compiled shaders.
     pobject = ren_createProgram((GLuint[]){vshader, fshader});
     shadeobject = ren_createProgram((GLuint[]){vshader, shadeshader});
     jfaobject = ren_createProgram((GLuint[]){vshader, jfashader});
+    distobject = ren_createProgram((GLuint[]){vshader, distshader});
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -239,7 +247,13 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         input_texture = output_texture;
     }
 
-    // second renderpass
+    //distance renderpass
+
+    glUseProgram(distobject);  
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    // last renderpass (gi)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, output_texture);
 
