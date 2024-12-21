@@ -26,6 +26,7 @@ struct ScreenGeometry {
 };
 
 /**
- * @return A new WindowContext
+ * @return A new ScreenGeometry
+ * @note this just wraps 2 triangles in a buffer covering the screen 
  */
 struct ScreenGeometry win_initScreenGeometry();

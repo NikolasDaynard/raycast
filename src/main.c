@@ -131,23 +131,15 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
-   
-    int Mode = GL_RGB;
+    int Mode = GL_RGBA; // win.surface->format == SDL_PIXELFORMAT_RGBA32
     
-    if(win.surface->format == SDL_PIXELFORMAT_RGBA32) {
-        Mode = GL_RGBA;
-    }
-    
-
-    // For Ortho mode, of course
-    // glViewport(-WINDOW_WIDTH, -WINDOW_HEIGHT, WINDOW_WIDTH * 2, WINDOW_HEIGHT * 2);
     glOrtho(0,win.surface->w,win.surface->h,0,-1,1); //Set the matrix
     glClearColor(0.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_TEXTURE_2D);
 
     GLuint input_texture = ren_createTexture(); // create texture to read from (input)
-    // bind sdl surface to it
+    // // bind sdl surface to it
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, win.surface->pixels);
 
     GLuint output_texture = ren_createTexture();
@@ -163,6 +155,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     const int NUM_PASSES = ceil(log2(fmax(WINDOW_WIDTH, WINDOW_HEIGHT)));
 
     glUseProgram(jfaobject); // outside loop
+    // todo can be cached
     GLuint uOffset = glGetUniformLocation(jfaobject, "uOffset");
 
     glUniform2f(glGetUniformLocation(jfaobject, "oneOverSize"),
@@ -181,7 +174,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         
-        input_texture = output_texture;
+        input_texture = output_texture; // TODO THIS IS LEAKY, use array
 
         if (i == 0) {
             glUniform1f(isSeed, false);
@@ -189,44 +182,41 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     }
 
     //distance renderpass
-
     glUseProgram(distobject);  
-
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
 
     // last renderpass (gi)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    // Activate texture unit 0 and bind the first texture
 
     GLuint original_input_texture = ren_createTexture(); // create texture to read from (input)
     // bind sdl surface to it
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, win.surface->pixels);
 
+    // Activate texture unit 1 and bind the second texture
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, original_input_texture);
 
-    // // Activate texture unit 1 and bind the second texture
+    // Activate texture unit 0 and bind the first texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, output_texture);
 
     // Use the shader program
-
     glUseProgram(pobject);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+
     SDL_GL_SwapWindow(win.window);
+    glDeleteFramebuffers(1, &framebuffer);
+    glDeleteTextures(3, (GLuint[]){input_texture, original_input_texture, output_texture});
 
-    glDeleteFramebuffers(1, &framebuffer);  
-
-    SDL_Delay(15);
-    // printf("%d click \n", clickingLMB);
-    fpsCounter++;
-    if (SDL_GetTicks() - fps > 1000) {
-        printf("%ld fps\n", fpsCounter);
-        fps = SDL_GetTicks();
-        fpsCounter = 0;
-    }
+    // // SDL_Delay(15);
+    // // printf("%d click \n", clickingLMB);
+    // fpsCounter++;
+    // if (SDL_GetTicks() - fps > 1000) {
+    //     printf("%ld fps\n", fpsCounter);
+    //     fps = SDL_GetTicks();
+    //     fpsCounter = 0;
+    // }
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
@@ -239,6 +229,10 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
 
     // Once finished with OpenGL functions, the SDL_GLContext can be destroyed.
     SDL_GL_DestroyContext(win.context);
+
+    glDeleteVertexArrays(1, &geo.VAO);
+    glDeleteBuffers(1, &geo.VBO);
+    glDeleteBuffers(1, &geo.EBO);    
 
     /* SDL will clean up the window/renderer for us. */
 }
