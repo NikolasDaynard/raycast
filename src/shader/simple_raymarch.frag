@@ -38,7 +38,7 @@ vec4 raymarch() {
         vec2 rayDirectionUv = vec2(cos(angle), -sin(angle)); // 100.0 is size TODO
 
         // Our current position, plus one step.
-        vec2 sampleUv = TexCoord + (rayDirectionUv / 320.0);// = TexCoord + rayDirectionUv;
+        vec2 sampleUv = TexCoord;
 
         for (int step = 1; step < maxSteps; step++) {
             // How far away is the nearest object?
@@ -50,9 +50,9 @@ vec4 raymarch() {
             if (outOfBounds(sampleUv)) break;
 
             // We hit something! (EPS = small number, like 0.001)
-            if (dist < 0.001 || step == maxSteps - 2) {
+            if (dist < 0.001) {
                 // Collect the radiance
-                radiance += texture(ourTexture, sampleUv + rayDirectionUv / 320.0);
+                radiance += texture(ourTexture, sampleUv);
                 break;
             }
         }

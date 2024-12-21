@@ -58,12 +58,18 @@ unsigned int VBO, VAO, EBO;
 Uint64 fps;
 Uint64 fpsCounter;
 
+// int colors[][3] = {
+//     {0, 0, 0},
+//     {128, 0, 0},
+//     {255, 0, 255},
+//     {255, 255, 255},
+//     {255, 128, 128},
+// };
 int colors[][3] = {
     {0, 0, 0},
-    {128, 0, 0},
-    {255, 0, 255},
-    {255, 255, 255},
-    {255, 128, 128},
+    {255, 0, 0},
+    {0, 255, 0},
+    {0, 0, 255},
 };
 int colorIndex = 0;
 
@@ -166,7 +172,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
         // }
         if (event->key.key == SDLK_SPACE) {
             colorIndex++;
-            if (colorIndex > sizeof(colors) / sizeof(colors[0])) {
+            if (colorIndex + 1 > sizeof(colors) / sizeof(colors[0])) {
                 colorIndex = 0;
             }
             printf ("switched to color %d, %d, %d\n", colors[colorIndex][0], colors[colorIndex][1], colors[colorIndex][2]);
