@@ -162,7 +162,9 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         (1.0 / (float)win.surface->w), (1.0 / (float)win.surface->h));
 
     GLuint isSeed = glGetUniformLocation(jfaobject, "isSeed");
-    glUniform1f(isSeed, true);
+    glUniform1f(isSeed, true);  
+
+    GLuint input_dead_textures[NUM_PASSES - 2];
 
     // -2 looks great, no idea why
     for (int i = 0; i < NUM_PASSES - 2; i ++) {
@@ -174,6 +176,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         
+        input_dead_textures[i] = input_texture;
         input_texture = output_texture; // TODO THIS IS LEAKY, use array
 
         if (i == 0) {
@@ -208,6 +211,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     SDL_GL_SwapWindow(win.window);
     glDeleteFramebuffers(1, &framebuffer);
     glDeleteTextures(3, (GLuint[]){input_texture, original_input_texture, output_texture});
+
+    glDeleteTextures(NUM_PASSES - 2, input_dead_textures);
 
     // // SDL_Delay(15);
     // // printf("%d click \n", clickingLMB);
