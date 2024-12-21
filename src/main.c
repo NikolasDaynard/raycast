@@ -108,6 +108,15 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
     // Create a program object and attach the two compiled shaders.
     pobject = ren_createProgram((GLuint[]){vshader, fshader});
+
+    int distanceTexture = glGetUniformLocation(pobject, "distanceTexture");
+    int ourTexture  = glGetUniformLocation(pobject, "ourTexture");
+
+    // Then bind the uniform samplers to texture units:
+    glUseProgram(pobject);
+    glUniform1i(distanceTexture, 0);
+    glUniform1i(ourTexture,  1);
+
     shadeobject = ren_createProgram((GLuint[]){vshader, shadeshader});
     jfaobject = ren_createProgram((GLuint[]){vshader, jfashader});
     distobject = ren_createProgram((GLuint[]){vshader, distshader});
@@ -218,7 +227,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
     const int NUM_PASSES = ceil(log2(fmax(WINDOW_WIDTH, WINDOW_HEIGHT)));
 
-    for (int i = 0; i < NUM_PASSES; i ++) {
+    for (int i = 0; i < NUM_PASSES + 0; i ++) {
         output_texture = ren_createTexture(); // create texture to write to (output)
         // bind new empty texture
         glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
@@ -253,12 +262,25 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+
     // last renderpass (gi)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // Activate texture unit 0 and bind the first texture
+
+    GLuint original_input_texture = ren_createTexture(); // create texture to read from (input)
+    // bind sdl surface to it
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, original_input_texture);
+
+    // // Activate texture unit 1 and bind the second texture
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, output_texture);
 
-    glUseProgram(shadeobject);  
+    // Use the shader program
 
+    glUseProgram(pobject);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     SDL_GL_SwapWindow(window);
