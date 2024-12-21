@@ -24,6 +24,7 @@ GLuint ren_createShader(const char *filename, GLenum type);
  * @param shaders: The shaders to link
  * @return A new linked pipeline
  * 
+ * @note The size of shaders is inferred to be two every time (TODO?)
  * @note A program is the opengl equivelent of a pipeline
  * @note Generally will take a vertex and fragment shader
  */

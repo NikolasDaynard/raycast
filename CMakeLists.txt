@@ -11,6 +11,8 @@ find_package(SDL3 REQUIRED)
 find_package(OpenGL REQUIRED)
 
 add_compile_definitions(GL_GLEXT_PROTOTYPES=1)
+add_compile_definitions(WINDOW_WIDTH=640)
+add_compile_definitions(WINDOW_HEIGHT=480)
 
 # Add your executable
 file(GLOB_RECURSE SOURCES "src/*.c")

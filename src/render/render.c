@@ -82,9 +82,10 @@ GLuint ren_createShader(const char *filename, GLenum type) {
 GLuint ren_createProgram(GLuint *shaders) {
     GLuint new_program = glCreateProgram();
 
-    for (int i = 0; i < sizeof(shaders) / sizeof(shaders[0]); i++) {
+    for (int i = 0; i < 2; i++) {
         glAttachShader(new_program, shaders[i]);
     }
+
 
     glLinkProgram(new_program);
 

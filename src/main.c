@@ -5,8 +5,6 @@
  * This code is public domain. Feel free to use it for any purpose!
  */
 
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
 #define SDL_MAIN_USE_CALLBACKS 1  /* use the callbacks instead of main() */
 
 #include <SDL3/SDL.h>
@@ -18,13 +16,10 @@
 #include <stdlib.h>
 
 #include "render/render.h"
+#include "render/window.h"
 
-/* We will use this renderer to draw into this window every frame. */
-static SDL_Window *window = NULL;
-static SDL_Renderer *renderer = NULL;
-static SDL_Texture *texture = NULL;
-static SDL_Surface *surface = NULL; // stores the radience state
-static SDL_GLContext context = NULL;
+struct WindowContext win;
+
 SDL_Texture *text = NULL;
 static int texture_width = 0;
 static int texture_height = 0;
@@ -43,28 +38,11 @@ GLuint jfaobject = 0;
 GLuint distshader = 0;
 GLuint distobject = 0;
 GLuint framebuffer;
-float vertices[] = {
-    // positions          // colors           // texture coords
-    1.0f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-    1.0f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-    -1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-    -1.0f,  1.0f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
-};
-unsigned int indices[] = {  
-    0, 1, 3, // first triangle
-    1, 2, 3  // second triangle
-};
-unsigned int VBO, VAO, EBO;
+
+struct ScreenGeometry geo;
 Uint64 fps;
 Uint64 fpsCounter;
 
-// int colors[][3] = {
-//     {0, 0, 0},
-//     {128, 0, 0},
-//     {255, 0, 255},
-//     {255, 255, 255},
-//     {255, 128, 128},
-// };
 int colors[][3] = {
     {0, 0, 0},
     {255, 0, 0},
@@ -76,34 +54,7 @@ int colorIndex = 0;
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
-    surface = SDL_CreateSurface(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_PIXELFORMAT_RGBA32);
-    
-    if (surface == NULL) {
-        printf("%s", SDL_GetError());
-    }
-
-    for (int i = 0; i < WINDOW_WIDTH - 1; i ++) {
-        for (int j = 0; j < WINDOW_HEIGHT - 1; j ++) {
-            SDL_WriteSurfacePixel(surface, i, j, 0, 0, 0, 0);
-        }
-    }
-    printf("w%d\n", surface->w);
-    printf("h%d\n", surface->h);
-
-    SDL_SetAppMetadata("Simple Radience Cascade Renderer", "0.0.1", "com.example.renderer-geometry");
-
-    if (!SDL_Init(SDL_INIT_VIDEO)) {
-        SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
-        return SDL_APP_FAILURE;
-    }
-    
-    //SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE
-    if (!SDL_CreateWindowAndRenderer("examples/renderer/geometry", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL, &window, &renderer)) {
-        SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
-        return SDL_APP_FAILURE;
-    }
-
-    context = SDL_GL_CreateContext(window);
+    win = win_initSDLContext();
 
     vshader = ren_createShader("../src/shader/shader.vert", GL_VERTEX_SHADER);
 
@@ -115,43 +66,18 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     // Create a program object and attach the two compiled shaders.
     pobject = ren_createProgram((GLuint[]){vshader, fshader});
 
-    int distanceTexture = glGetUniformLocation(pobject, "distanceTexture");
-    int ourTexture  = glGetUniformLocation(pobject, "ourTexture");
-
-    // Then bind the uniform samplers to texture units:
+    // set texture uniform positions
     glUseProgram(pobject);
-    glUniform1i(distanceTexture, 0);
-    glUniform1i(ourTexture,  1);
+    glUniform1i(glGetUniformLocation(pobject, "distanceTexture"), 0);
+    glUniform1i(glGetUniformLocation(pobject, "ourTexture"),  1);
 
     shadeobject = ren_createProgram((GLuint[]){vshader, shadeshader});
     jfaobject = ren_createProgram((GLuint[]){vshader, jfashader});
     distobject = ren_createProgram((GLuint[]){vshader, distshader});
 
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    // texture coord attribute
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
+    geo = win_initScreenGeometry();
+    
     glGenFramebuffers(1, &framebuffer);
-
-    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
@@ -164,12 +90,6 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
     }
 
     if (event->key.down) {
-        // if (event->key.key == SDLK_LEFT) {
-        //     TEST_X += 1;
-        // }
-        // if (event->key.key == SDLK_RIGHT) {
-        //     TEST_X -= 1;
-        // }
         if (event->key.key == SDLK_SPACE) {
             colorIndex++;
             if (colorIndex + 1 > sizeof(colors) / sizeof(colors[0])) {
@@ -198,7 +118,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
                         break;
                     }
                     if (sqrt(pow(i - x_pos, 2) + pow(j - y_pos, 2)) < radius) {
-                        SDL_WriteSurfacePixel(surface, i, j, colors[colorIndex][0], colors[colorIndex][1], colors[colorIndex][2], 255);
+                        SDL_WriteSurfacePixel(win.surface, i, j, colors[colorIndex][0], colors[colorIndex][1], colors[colorIndex][2], 255);
                     }
                 }
             }
@@ -214,25 +134,25 @@ SDL_AppResult SDL_AppIterate(void *appstate)
    
     int Mode = GL_RGB;
     
-    if(surface->format == SDL_PIXELFORMAT_RGBA32) {
+    if(win.surface->format == SDL_PIXELFORMAT_RGBA32) {
         Mode = GL_RGBA;
     }
     
 
     // For Ortho mode, of course
     // glViewport(-WINDOW_WIDTH, -WINDOW_HEIGHT, WINDOW_WIDTH * 2, WINDOW_HEIGHT * 2);
-    glOrtho(0,surface->w,surface->h,0,-1,1); //Set the matrix
+    glOrtho(0,win.surface->w,win.surface->h,0,-1,1); //Set the matrix
     glClearColor(0.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_TEXTURE_2D);
 
     GLuint input_texture = ren_createTexture(); // create texture to read from (input)
     // bind sdl surface to it
-    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, win.surface->pixels);
 
     GLuint output_texture = ren_createTexture();
     glBindTexture(GL_TEXTURE_2D, output_texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
 
     // set render target
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -246,7 +166,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     GLuint uOffset = glGetUniformLocation(jfaobject, "uOffset");
 
     glUniform2f(glGetUniformLocation(jfaobject, "oneOverSize"),
-        (1.0 / (float)surface->w), (1.0 / (float)surface->h));
+        (1.0 / (float)win.surface->w), (1.0 / (float)win.surface->h));
 
     GLuint isSeed = glGetUniformLocation(jfaobject, "isSeed");
     glUniform1f(isSeed, true);
@@ -281,7 +201,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
     GLuint original_input_texture = ren_createTexture(); // create texture to read from (input)
     // bind sdl surface to it
-    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, win.surface->pixels);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, original_input_texture);
@@ -295,7 +215,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glUseProgram(pobject);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-    SDL_GL_SwapWindow(window);
+    SDL_GL_SwapWindow(win.window);
 
     glDeleteFramebuffers(1, &framebuffer);  
 
@@ -314,11 +234,11 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 /* This function runs once at shutdown. */
 void SDL_AppQuit(void *appstate, SDL_AppResult result)
 {
-    SDL_DestroyTexture(texture);
-    SDL_DestroySurface(surface);
+    SDL_DestroyTexture(win.texture);
+    SDL_DestroySurface(win.surface);
 
     // Once finished with OpenGL functions, the SDL_GLContext can be destroyed.
-    SDL_GL_DestroyContext(context);  
+    SDL_GL_DestroyContext(win.context);
 
     /* SDL will clean up the window/renderer for us. */
 }

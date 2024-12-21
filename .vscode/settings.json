@@ -8,6 +8,7 @@
         "sdl_opengl.h": "c",
         "sdl_opengl_glext.h": "c",
         "render.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "cstdlib": "c"
     }
 }
