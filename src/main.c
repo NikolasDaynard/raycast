@@ -223,37 +223,43 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     GLuint input_texture = ren_createTexture(); // create texture to read from (input)
     // bind sdl surface to it
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, surface->pixels);
-    GLuint output_texture;
+
+    GLuint output_texture = ren_createTexture();
+    glBindTexture(GL_TEXTURE_2D, output_texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
+
+    // set render target
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    // set the output buffer texture
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output_texture, 0);
+
 
     const int NUM_PASSES = ceil(log2(fmax(WINDOW_WIDTH, WINDOW_HEIGHT)));
 
-    for (int i = 0; i < NUM_PASSES + 0; i ++) {
-        output_texture = ren_createTexture(); // create texture to write to (output)
-        // bind new empty texture
-        glTexImage2D(GL_TEXTURE_2D, 0, Mode, surface->w, surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
+    glUseProgram(jfaobject); // outside loop
+    GLuint uOffset = glGetUniformLocation(jfaobject, "uOffset");
 
-        // set render target
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        // set the output buffer texture
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output_texture, 0);
+    glUniform2f(glGetUniformLocation(jfaobject, "oneOverSize"),
+        (1.0 / (float)surface->w), (1.0 / (float)surface->h));
 
+    GLuint isSeed = glGetUniformLocation(jfaobject, "isSeed");
+    glUniform1f(isSeed, true);
+
+    // -2 looks great, no idea why
+    for (int i = 0; i < NUM_PASSES - 2; i ++) {
         // assign sampler texture
         glBindTexture(GL_TEXTURE_2D, input_texture);
 
-        glUseProgram(jfaobject);
-
-        GLuint uOffset = glGetUniformLocation(jfaobject, "uOffset");
         GLfloat lightPos = pow(2, NUM_PASSES - i - 1);
         glUniform1f(uOffset, lightPos);
 
-        GLuint oneOverSize = glGetUniformLocation(jfaobject, "oneOverSize");
-        glUniform2f(oneOverSize, (1.0 / (float)surface->w), (1.0 / (float)surface->h));
-
-        GLuint isSeed = glGetUniformLocation(jfaobject, "isSeed");
-        glUniform1f(isSeed, (i == 0));
-
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        
         input_texture = output_texture;
+
+        if (i == 0) {
+            glUniform1f(isSeed, false);
+        }
     }
 
     //distance renderpass
