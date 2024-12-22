@@ -8,7 +8,8 @@ uniform sampler2D distanceTexture;
 uniform sampler2D ourTexture; // input
 uniform sampler2D lastTexture;
 uniform int rayCount;
-uniform int resolution;
+uniform vec2 resolution;
+uniform int baseRayCount;
 
 bool outOfBounds(vec2 uv) {
   return uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0;
@@ -24,16 +25,22 @@ vec4 raymarch() {
     if (light.a > 0.1) {
         return light;
     }
-    const int maxSteps = 40;
+    const int maxSteps = 4000;
     const float PI = 3.14159265;
     const float TAU = 2.0 * PI;
+    const float minStepSize = 0.1;
     float oneOverRayCount = 1.0 / float(rayCount);
     float tauOverRayCount = TAU * oneOverRayCount;
 
-    vec2 coord = uv * resolution;
+    vec2 coord = TexCoord * resolution;
 
     bool isLastLayer = rayCount == baseRayCount;
-    vec2 effectiveUv = isLastLayer ? uv : floor(coord / 2.0) * 2.0 / resolution;
+    vec2 effectiveUv = isLastLayer ? TexCoord : floor(coord / 2.0) * 2.0 / resolution;
+
+    float partial = 0.125;
+    float intervalStart = rayCount == baseRayCount ? 0.0 : partial;
+    float intervalEnd = rayCount == baseRayCount ? partial : sqrt(2.0);
+
 
     // Distinct random value for every pixel
     float noise = 1.0;
@@ -41,30 +48,50 @@ vec4 raymarch() {
     vec4 radiance = vec4(0.0);
 
     for(int i = 0; i < rayCount; i++) {
-        float angle = tauOverRayCount * (float(i) + noise);
-        vec2 rayDirectionUv = vec2(cos(angle), -sin(angle)); // 100.0 is size TODO
 
-        // Our current position, plus one step.
-        vec2 sampleUv = TexCoord;
+        float index = float(i);
+        // Add 0.5 radians to avoid vertical angles
+        float angleStep = (index + 0.5);
+        float angle = angleStep;
+        vec2 rayDirection = vec2(cos(angle), -sin(angle));
 
+        vec2 scale = min(resolution.x, resolution.y) / resolution;
+
+        // Start in our decided starting location
+        vec2 sampleUv = effectiveUv + rayDirection * intervalStart * scale;
+        // Keep track of how far we've gone
+        float traveled = intervalStart;
+        vec4 radDelta = vec4(0.0);
+
+        // (Existing loop, but to reiterate, we're raymarching)
         for (int step = 1; step < maxSteps; step++) {
             // How far away is the nearest object?
-            float dist = texture(distanceTexture, sampleUv).r;
+            float dist = texture(distanceTexture, effectiveUv).r;
 
-            // Go the direction we're traveling (with noise)
-            sampleUv += rayDirectionUv * dist;
+            // Go the direction we're traveling
+            sampleUv += rayDirection * dist * scale;
 
             if (outOfBounds(sampleUv)) break;
 
-            // We hit something! (EPS = small number, like 0.001)
-            if (dist < 0.001) {
-                // Collect the radiance
-                radiance += texture(ourTexture, sampleUv);
+            // Read if our distance field tells us to!
+            if (dist < minStepSize) {
+                // Accumulate radiance or shadow!
+                vec4 colorSample = texture(ourTexture, sampleUv);
+                radDelta += vec4(colorSample.rgb, 1.0);
                 break;
             }
+
+            // Stop if we've gone our interval length!
+            traveled += dist;
+            if (traveled >= intervalEnd) break;
         }
+
+        // Accumulate total radiance
+        radiance += radDelta;
     }
-    
+    if (radiance != vec4(0)) {
+        return vec4(1.0);
+    }
     return radiance * oneOverRayCount;
 }
 

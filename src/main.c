@@ -224,11 +224,16 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     // Use the shader program
     glUseProgram(pobject);
 
+    const int BASE_RAY_COUNT = 16;
+
     GLuint uRayCount = glGetUniformLocation(pobject, "rayCount");
+    GLuint uResolution = glGetUniformLocation(pobject, "resolution");
+    glUniform1i(glGetUniformLocation(pobject, "baseRayCount"), BASE_RAY_COUNT);
 
     for (int i = 2; i >= 1; i--) {
 
-        glUniform1i(uRayCount, pow(16, i));
+        glUniform1i(uRayCount, pow(BASE_RAY_COUNT, i));
+        glUniform2f(uResolution, pow(.25, i), pow(.25, i));
         // printf("%f\n", pow(16, i));
         // assign sampler texture
         glActiveTexture(GL_TEXTURE2);
