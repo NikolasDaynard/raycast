@@ -1,6 +1,7 @@
 #version 330 core
 out vec4 FragColor;
   
+precision highp float;
 in vec3 ourColor;
 in vec2 TexCoord;
 
@@ -25,21 +26,25 @@ vec4 raymarch() {
     if (light.a > 0.1) {
         return light;
     }
-    const int maxSteps = 4000;
+    const int maxSteps = 40;
     const float PI = 3.14159265;
     const float TAU = 2.0 * PI;
-    const float minStepSize = 0.1;
+    const float minStepSize = .05;
+    const float srgb = 1.0;
+    vec2 scale = min(resolution.x, resolution.y) / resolution;
     float oneOverRayCount = 1.0 / float(rayCount);
     float tauOverRayCount = TAU * oneOverRayCount;
 
-    vec2 coord = TexCoord * resolution;
+    vec2 coord = floor(TexCoord * resolution);
 
     bool isLastLayer = rayCount == baseRayCount;
     vec2 effectiveUv = isLastLayer ? TexCoord : floor(coord / 2.0) * 2.0 / resolution;
 
     float partial = 0.125;
+
     float intervalStart = rayCount == baseRayCount ? 0.0 : partial;
     float intervalEnd = rayCount == baseRayCount ? partial : sqrt(2.0);
+
 
     vec4 radiance = vec4(0.0);
 
@@ -51,8 +56,6 @@ vec4 raymarch() {
         float angle = angleStep;
         vec2 rayDirection = vec2(cos(angle), -sin(angle));
 
-        vec2 scale = min(resolution.x, resolution.y) / resolution;
-
         // Start in our decided starting location
         vec2 sampleUv = effectiveUv + (rayDirection * intervalStart * scale);
         // Keep track of how far we've gone
@@ -62,7 +65,7 @@ vec4 raymarch() {
         // (Existing loop, but to reiterate, we're raymarching)
         for (int step = 1; step < maxSteps; step++) {
             // How far away is the nearest object?
-            float dist = texture(distanceTexture, effectiveUv).r;
+            float dist = texture(distanceTexture, sampleUv).r;
 
             // Go the direction we're traveling
             sampleUv += rayDirection * dist * scale;
@@ -73,7 +76,7 @@ vec4 raymarch() {
             if (dist < minStepSize) {
                 // Accumulate radiance or shadow!
                 vec4 colorSample = texture(ourTexture, sampleUv);
-                radDelta += vec4(colorSample.rgb, 1.0);
+                radDelta += vec4(pow(colorSample.rgb, vec3(srgb)), 1.0);
                 break;
             }
 
@@ -87,16 +90,17 @@ vec4 raymarch() {
       if (rayCount == baseRayCount && radDelta.a == 0.0) {
         vec4 upperSample = texture(lastTexture, TexCoord);
 
-        radDelta += vec4(upperSample.rgb, upperSample.a);
+        radDelta += vec4(pow(upperSample.rgb, vec3(srgb)), upperSample.a);
       }
 
         // Accumulate total radiance
         radiance += radDelta;
     }
-    if (radiance != vec4(0)) {
-        // return vec4(1.0);
-    }
-    return radiance * oneOverRayCount;
+
+    vec3 final = radiance.rgb * oneOverRayCount;
+    vec3 correctSRGB = pow(final, vec3(srgb));
+
+    return vec4(final, 1.0);
 }
 
 

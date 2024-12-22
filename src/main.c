@@ -229,12 +229,12 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     GLuint uRayCount = glGetUniformLocation(pobject, "rayCount");
     GLuint uResolution = glGetUniformLocation(pobject, "resolution");
     glUniform1i(glGetUniformLocation(pobject, "baseRayCount"), BASE_RAY_COUNT);
+    glUniform2f(uResolution, WINDOW_WIDTH, WINDOW_HEIGHT);  
 
-    for (int i = 2; i >= 1; i--) {
+    for (int i = 2; i >= 2; i--) {
 
-        glUniform1i(uRayCount, pow(BASE_RAY_COUNT, i));
-        glUniform2f(uResolution, WINDOW_WIDTH, WINDOW_HEIGHT);
-        // printf("%f\n", pow(16, i));
+        glUniform1i(uRayCount, (int)pow(BASE_RAY_COUNT, i));
+        // printf("%d\n", (int)pow(BASE_RAY_COUNT, i));
         // assign sampler texture
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, original_input_texture); // last pass
