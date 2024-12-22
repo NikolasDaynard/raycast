@@ -111,7 +111,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
         if (clickingLMB) {
             int x_pos = event->motion.x;
             int y_pos = WINDOW_HEIGHT - event->motion.y;
-            int radius = 15;
+            int radius = 5;
             for (int i = x_pos - radius; i < (x_pos + radius) - 1; i ++) {
                 for (int j = y_pos - radius; j < (y_pos + radius) - 1; j ++) {
                     if (j < 1 || i < 1) {
@@ -224,7 +224,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     // Use the shader program
     glUseProgram(pobject);
 
-    const int BASE_RAY_COUNT = 32;
+    const int BASE_RAY_COUNT = 16;
 
     GLuint uRayCount = glGetUniformLocation(pobject, "rayCount");
     GLuint uResolution = glGetUniformLocation(pobject, "resolution");

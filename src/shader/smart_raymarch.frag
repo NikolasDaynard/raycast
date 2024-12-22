@@ -30,10 +30,11 @@ vec4 raymarch() {
     const float PI = 3.14159265;
     const float TAU = 2.0 * PI;
     const float minStepSize = .001;
-    const float srgb = 1.0;
+    const float srgb = 1.0;//.8;
     vec2 scale = min(resolution.x, resolution.y) / resolution;
     float oneOverRayCount = 1.0 / float(rayCount);
     float tauOverRayCount = TAU * oneOverRayCount;
+    float angleStepSize = TAU * oneOverRayCount;
 
     vec2 coord = floor(TexCoord * resolution);
 
@@ -53,7 +54,7 @@ vec4 raymarch() {
         float index = float(i);
         // Add 0.5 radians to avoid vertical angles
         float angleStep = (index + 0.5);
-        float angle = angleStep;
+        float angle = angleStep * angleStepSize;
         vec2 rayDirection = vec2(cos(angle), -sin(angle));
 
         // Start in our decided starting location
@@ -87,7 +88,7 @@ vec4 raymarch() {
 
 
       // Only merge on non-opaque areas
-      if (rayCount == baseRayCount && radDelta.a == 0.0) {
+      if (rayCount == baseRayCount && radDelta.a < .1) {
         vec4 upperSample = texture(lastTexture, TexCoord);
 
         radDelta += vec4(pow(upperSample.rgb, vec3(srgb)), upperSample.a);
@@ -100,7 +101,7 @@ vec4 raymarch() {
     vec3 final = radiance.rgb * oneOverRayCount;
     vec3 correctSRGB = pow(final, vec3(srgb));
 
-    return vec4(final, 1.0);
+    return vec4(correctSRGB, 1.0);
 }
 
 
