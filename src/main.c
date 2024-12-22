@@ -233,7 +233,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     for (int i = 2; i >= 1; i--) {
 
         glUniform1i(uRayCount, pow(BASE_RAY_COUNT, i));
-        glUniform2f(uResolution, pow(.25, i), pow(.25, i));
+        glUniform2f(uResolution, WINDOW_WIDTH, WINDOW_HEIGHT);
         // printf("%f\n", pow(16, i));
         // assign sampler texture
         glActiveTexture(GL_TEXTURE2);
@@ -259,7 +259,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glDeleteFramebuffers(1, &framebuffer);
 
 
-    glDeleteTextures(4, (GLuint[]){input_texture, original_input_texture, output_texture, gi_output_texture});
+    // gi_output_texture implicitly freed via original_input_texture
+    glDeleteTextures(4, (GLuint[]){input_texture, original_input_texture, output_texture});
 
     glDeleteTextures(NUM_PASSES - 2, gi_dead_textures);
     glDeleteTextures(NUM_PASSES - 2, input_dead_textures);

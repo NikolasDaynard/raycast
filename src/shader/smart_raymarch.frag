@@ -41,10 +41,6 @@ vec4 raymarch() {
     float intervalStart = rayCount == baseRayCount ? 0.0 : partial;
     float intervalEnd = rayCount == baseRayCount ? partial : sqrt(2.0);
 
-
-    // Distinct random value for every pixel
-    float noise = 1.0;
-
     vec4 radiance = vec4(0.0);
 
     for(int i = 0; i < rayCount; i++) {
@@ -58,7 +54,7 @@ vec4 raymarch() {
         vec2 scale = min(resolution.x, resolution.y) / resolution;
 
         // Start in our decided starting location
-        vec2 sampleUv = effectiveUv + rayDirection * intervalStart * scale;
+        vec2 sampleUv = effectiveUv + (rayDirection * intervalStart * scale);
         // Keep track of how far we've gone
         float traveled = intervalStart;
         vec4 radDelta = vec4(0.0);
@@ -86,11 +82,19 @@ vec4 raymarch() {
             if (traveled >= intervalEnd) break;
         }
 
+
+      // Only merge on non-opaque areas
+      if (rayCount == baseRayCount && radDelta.a == 0.0) {
+        vec4 upperSample = texture(lastTexture, TexCoord);
+
+        radDelta += vec4(upperSample.rgb, upperSample.a);
+      }
+
         // Accumulate total radiance
         radiance += radDelta;
     }
     if (radiance != vec4(0)) {
-        return vec4(1.0);
+        // return vec4(1.0);
     }
     return radiance * oneOverRayCount;
 }
