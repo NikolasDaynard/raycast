@@ -219,6 +219,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 
     GLuint gi_dead_textures[200];
+    GLuint gi_output_dead_textures[200];
+    gi_output_dead_textures[0] = gi_output_texture;
     gi_dead_textures[0] = original_input_texture;
 
     // Use the shader program
@@ -232,8 +234,24 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glUniform2f(uResolution, WINDOW_WIDTH, WINDOW_HEIGHT);  
 
     for (int i = 2; i >= 1; i--) {
+        original_input_texture = ren_createTexture(); // create texture to read from (input)
+        // bind sdl surface to it
+        glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, win.surface->pixels);
+
 
         glUniform1i(uRayCount, (int)pow(BASE_RAY_COUNT, i));
+
+        GLuint gi_new_output_texture = ren_createTexture(); 
+
+        glBindTexture(GL_TEXTURE_2D, gi_new_output_texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
+
+        // set render target
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        // set the output buffer texture
+
+        gi_output_dead_textures[i] = gi_new_output_texture;
+
         // printf("%d\n", (int)pow(BASE_RAY_COUNT, i));
         // assign sampler texture
         glActiveTexture(GL_TEXTURE2);
@@ -245,13 +263,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         gi_dead_textures[i] = original_input_texture;
-        original_input_texture = gi_output_texture; // TODO THIS IS LEAKY, use array
-
-        // clear previous
-        glBindTexture(GL_TEXTURE_2D, gi_output_texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
-        // set the output buffer texture
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gi_output_texture, 0);
+        original_input_texture = gi_output_dead_textures[i]; // TODO THIS IS LEAKY, use array
     }
 
 
@@ -269,6 +281,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glDeleteTextures(4, (GLuint[]){input_texture, original_input_texture, output_texture});
 
     glDeleteTextures(NUM_PASSES - 2, gi_dead_textures);
+    glDeleteTextures(NUM_PASSES - 2, gi_output_dead_textures);
     glDeleteTextures(NUM_PASSES - 2, input_dead_textures);
 
     SDL_Delay(15);
