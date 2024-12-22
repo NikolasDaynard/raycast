@@ -224,14 +224,14 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     // Use the shader program
     glUseProgram(pobject);
 
-    const int BASE_RAY_COUNT = 16;
+    const int BASE_RAY_COUNT = 32;
 
     GLuint uRayCount = glGetUniformLocation(pobject, "rayCount");
     GLuint uResolution = glGetUniformLocation(pobject, "resolution");
     glUniform1i(glGetUniformLocation(pobject, "baseRayCount"), BASE_RAY_COUNT);
     glUniform2f(uResolution, WINDOW_WIDTH, WINDOW_HEIGHT);  
 
-    for (int i = 2; i >= 2; i--) {
+    for (int i = 2; i >= 1; i--) {
 
         glUniform1i(uRayCount, (int)pow(BASE_RAY_COUNT, i));
         // printf("%d\n", (int)pow(BASE_RAY_COUNT, i));

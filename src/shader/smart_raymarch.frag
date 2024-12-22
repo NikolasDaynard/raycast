@@ -29,7 +29,7 @@ vec4 raymarch() {
     const int maxSteps = 40;
     const float PI = 3.14159265;
     const float TAU = 2.0 * PI;
-    const float minStepSize = .05;
+    const float minStepSize = .001;
     const float srgb = 1.0;
     vec2 scale = min(resolution.x, resolution.y) / resolution;
     float oneOverRayCount = 1.0 / float(rayCount);
