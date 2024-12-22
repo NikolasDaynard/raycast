@@ -29,9 +29,6 @@ GLuint vshader = 0;
 GLuint fshader = 0;
 GLuint pobject = 0;
 
-GLuint shadeshader = 0;
-GLuint shadeobject = 0;
-
 GLuint jfashader = 0;
 GLuint jfaobject = 0;
 
@@ -63,7 +60,6 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     vshader = ren_createShader("../src/shader/shader.vert", GL_VERTEX_SHADER);
 
     fshader = ren_createShader("../src/shader/smart_raymarch.frag", GL_FRAGMENT_SHADER);
-    shadeshader = ren_createShader("../src/shader/shadeshader.frag", GL_FRAGMENT_SHADER);
     jfashader = ren_createShader("../src/shader/jfa.frag", GL_FRAGMENT_SHADER);
     distshader = ren_createShader("../src/shader/jfa_dist.frag", GL_FRAGMENT_SHADER);
     simpleshader = ren_createShader("../src/shader/simple.frag", GL_FRAGMENT_SHADER);
@@ -73,8 +69,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     glUseProgram(pobject);
     glUniform1i(glGetUniformLocation(pobject, "distanceTexture"), 0);
     glUniform1i(glGetUniformLocation(pobject, "ourTexture"),  1);
+    glUniform1i(glGetUniformLocation(pobject, "lastTexture"),  2);
 
-    shadeobject = ren_createProgram((GLuint[]){vshader, shadeshader});
     jfaobject = ren_createProgram((GLuint[]){vshader, jfashader});
     distobject = ren_createProgram((GLuint[]){vshader, distshader});
     simpleobject = ren_createProgram((GLuint[]){vshader, simpleshader});
@@ -209,6 +205,10 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gi_output_texture, 0);
 
     // Activate texture unit 1 and bind the second texture
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, original_input_texture);
+
+    // Activate texture unit 1 and bind the second texture
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, original_input_texture);
 
@@ -219,16 +219,25 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 
     GLuint gi_dead_textures[200];
-    // -2 looks great, no idea why
-    for (int i = 0; i < 200; i ++) {
+    gi_dead_textures[0] = original_input_texture;
+
+    // Use the shader program
+    glUseProgram(pobject);
+
+    GLuint uRayCount = glGetUniformLocation(pobject, "rayCount");
+
+    for (int i = 2; i >= 1; i--) {
+
+        glUniform1i(uRayCount, pow(16, i));
+        // printf("%f\n", pow(16, i));
         // assign sampler texture
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, original_input_texture); // last pass
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, original_input_texture);
+        glBindTexture(GL_TEXTURE_2D, gi_dead_textures[0]); // original
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, output_texture);
 
-            // Use the shader program
-        glUseProgram(pobject);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         gi_dead_textures[i] = original_input_texture;
         original_input_texture = gi_output_texture; // TODO THIS IS LEAKY, use array
@@ -273,7 +282,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
 
     glDeleteVertexArrays(1, &geo.VAO);
     glDeleteBuffers(1, &geo.VBO);
-    glDeleteBuffers(1, &geo.EBO);    
+    glDeleteBuffers(1, &geo.EBO);
 
     /* SDL will clean up the window/renderer for us. */
 }
