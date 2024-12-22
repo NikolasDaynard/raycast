@@ -37,6 +37,10 @@ GLuint jfaobject = 0;
 
 GLuint distshader = 0;
 GLuint distobject = 0;
+
+GLuint simpleshader = 0;
+GLuint simpleobject = 0;
+
 GLuint framebuffer;
 
 struct ScreenGeometry geo;
@@ -58,14 +62,13 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
     vshader = ren_createShader("../src/shader/shader.vert", GL_VERTEX_SHADER);
 
-    fshader = ren_createShader("../src/shader/simple_raymarch.frag", GL_FRAGMENT_SHADER);
+    fshader = ren_createShader("../src/shader/smart_raymarch.frag", GL_FRAGMENT_SHADER);
     shadeshader = ren_createShader("../src/shader/shadeshader.frag", GL_FRAGMENT_SHADER);
     jfashader = ren_createShader("../src/shader/jfa.frag", GL_FRAGMENT_SHADER);
     distshader = ren_createShader("../src/shader/jfa_dist.frag", GL_FRAGMENT_SHADER);
+    simpleshader = ren_createShader("../src/shader/simple.frag", GL_FRAGMENT_SHADER);
 
-    // Create a program object and attach the two compiled shaders.
     pobject = ren_createProgram((GLuint[]){vshader, fshader});
-
     // set texture uniform positions
     glUseProgram(pobject);
     glUniform1i(glGetUniformLocation(pobject, "distanceTexture"), 0);
@@ -74,6 +77,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     shadeobject = ren_createProgram((GLuint[]){vshader, shadeshader});
     jfaobject = ren_createProgram((GLuint[]){vshader, jfashader});
     distobject = ren_createProgram((GLuint[]){vshader, distshader});
+    simpleobject = ren_createProgram((GLuint[]){vshader, simpleshader});
 
     geo = win_initScreenGeometry();
     
@@ -189,11 +193,20 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     // last renderpass (gi)
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     GLuint original_input_texture = ren_createTexture(); // create texture to read from (input)
     // bind sdl surface to it
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, win.surface->pixels);
+
+    GLuint gi_output_texture = ren_createTexture(); 
+
+    glBindTexture(GL_TEXTURE_2D, gi_output_texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
+
+    // set render target
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    // set the output buffer texture
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gi_output_texture, 0);
 
     // Activate texture unit 1 and bind the second texture
     glActiveTexture(GL_TEXTURE1);
@@ -203,25 +216,48 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, output_texture);
 
-    // Use the shader program
-    glUseProgram(pobject);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+
+    GLuint gi_dead_textures[200];
+    // -2 looks great, no idea why
+    for (int i = 0; i < 200; i ++) {
+        // assign sampler texture
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, original_input_texture);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, output_texture);
+
+            // Use the shader program
+        glUseProgram(pobject);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        gi_dead_textures[i] = original_input_texture;
+        original_input_texture = gi_output_texture; // TODO THIS IS LEAKY, use array
+    }
+
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0); // bind screen, and render out final
+    glUseProgram(simpleobject);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, gi_output_texture);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     SDL_GL_SwapWindow(win.window);
     glDeleteFramebuffers(1, &framebuffer);
-    glDeleteTextures(3, (GLuint[]){input_texture, original_input_texture, output_texture});
 
+
+    glDeleteTextures(4, (GLuint[]){input_texture, original_input_texture, output_texture, gi_output_texture});
+
+    glDeleteTextures(NUM_PASSES - 2, gi_dead_textures);
     glDeleteTextures(NUM_PASSES - 2, input_dead_textures);
 
-    // // SDL_Delay(15);
-    // // printf("%d click \n", clickingLMB);
-    // fpsCounter++;
-    // if (SDL_GetTicks() - fps > 1000) {
-    //     printf("%ld fps\n", fpsCounter);
-    //     fps = SDL_GetTicks();
-    //     fpsCounter = 0;
-    // }
+    SDL_Delay(15);
+
+    fpsCounter++;
+    if (SDL_GetTicks() - fps > 1000) {
+        printf("%ld fps\n", fpsCounter);
+        fps = SDL_GetTicks();
+        fpsCounter = 0;
+    }
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
