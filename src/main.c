@@ -205,15 +205,15 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gi_output_texture, 0);
 
     // Activate texture unit 1 and bind the second texture
-    glActiveTexture(GL_TEXTURE2);
+    glActiveTexture(GL_TEXTURE2); // last tex
     glBindTexture(GL_TEXTURE_2D, original_input_texture);
 
     // Activate texture unit 1 and bind the second texture
-    glActiveTexture(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE1); // current tex
     glBindTexture(GL_TEXTURE_2D, original_input_texture);
 
     // Activate texture unit 0 and bind the first texture
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0); // dist
     glBindTexture(GL_TEXTURE_2D, output_texture);
 
 
@@ -246,6 +246,12 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         gi_dead_textures[i] = original_input_texture;
         original_input_texture = gi_output_texture; // TODO THIS IS LEAKY, use array
+
+        // clear previous
+        glBindTexture(GL_TEXTURE_2D, gi_output_texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
+        // set the output buffer texture
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gi_output_texture, 0);
     }
 
 
