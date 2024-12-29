@@ -115,9 +115,7 @@ vec4 raymarch() {
 
         vec2 offset = (probeRelativePosition + 0.5) / sqrtBase;
         vec2 upperUv = (upperPosition + offset) / resolution;
-        // if (texture(lastTexture, upperUv).a > 0.99) {
-          radDelta += texture(lastTexture, upperUv);
-        // }
+        radDelta += texture(lastTexture, upperUv);
       }
 
         // Accumulate total radiance
@@ -127,7 +125,7 @@ vec4 raymarch() {
     vec3 final = radiance.rgb * oneOverRayCount;
     vec3 correctSRGB = pow(final, vec3(srgb));
 
-    return vec4(final.rgb, 1.0);
+    return vec4(correctSRGB.rgb, 1.0);
 }
 
 
