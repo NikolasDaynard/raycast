@@ -23,9 +23,11 @@ float rand(vec2 n) {
 vec4 raymarch() {
     vec4 light = texture(ourTexture, TexCoord);
 
-    // avoid on-line if not base case
-    if (light.a > 0.1 && rayCount == baseRayCount) {
+    if (light.a > 0.1) {
+      // avoid on-line if not base case
+      if (rayCount == baseRayCount) {
         return light;
+      }
     }
     const int maxSteps = 40;
     const float PI = 3.14159265;
@@ -42,7 +44,7 @@ vec4 raymarch() {
     bool isLastLayer = rayCount == baseRayCount;
     vec2 effectiveUv = isLastLayer ? TexCoord : floor(coord / 2.0) * 2.0 / resolution;
 
-    float partial = 0.125;
+    float partial = 0.125; // when to split, lower = higher quality
 
     float intervalStart = rayCount == baseRayCount ? 0.0 : partial;
     float intervalEnd = rayCount == baseRayCount ? partial : sqrt(2.0);
