@@ -226,7 +226,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     // Use the shader program
     glUseProgram(pobject);
 
-    const int BASE_RAY_COUNT = 16;
+    const int BASE_RAY_COUNT = 32;
 
     GLuint uRayCount = glGetUniformLocation(pobject, "rayCount");
     GLuint uResolution = glGetUniformLocation(pobject, "resolution");

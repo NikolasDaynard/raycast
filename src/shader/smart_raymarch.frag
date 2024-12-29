@@ -225,25 +225,20 @@ vec4 raymarch() {
         vec2 upperPosition = vec2(
           mod(index, sqrtBase), floor(index / upperSpacing)
         ) * upperSize;
+        vec2 offset = (probeRelativePosition + 0.5) / sqrtBase;
+        vec2 upperUv = (upperPosition + offset) / resolution;
 
-        vec2 offset = (probeRelativePosition + 0.5) / upperSpacing;
-
-        vec4 upperSample = texture(
-          lastTexture,
-          (upperPosition + offset) / resolution
-        );
-
-        radDelta += vec4(upperSample.rgb, upperSample.a);
+        radDelta += texture(lastTexture, upperUv);
       }
 
         // Accumulate total radiance
         radiance += radDelta;
     }
 
-    vec3 final = radiance.rgb * oneOverRayCount;
-    vec3 correctSRGB = pow(final, vec3(srgb));
+    // vec3 final = radiance.rgb * oneOverRayCount;
+    // vec3 correctSRGB = pow(final, vec3(srgb));
 
-    return vec4(correctSRGB, 1.0);
+    return vec4(radiance.rgb, 1.0);
 }
 
 
