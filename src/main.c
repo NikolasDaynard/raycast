@@ -252,18 +252,16 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
         gi_output_dead_textures[i] = gi_new_output_texture;
 
-        // printf("%d\n", (int)pow(BASE_RAY_COUNT, i));
-        // assign sampler texture
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, original_input_texture); // last pass
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, gi_dead_textures[0]); // original
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, output_texture);
+        glBindTexture(GL_TEXTURE_2D, output_texture); // disr
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         gi_dead_textures[i] = original_input_texture;
-        original_input_texture = gi_output_dead_textures[i]; // TODO THIS IS LEAKY, use array
+        original_input_texture = gi_output_texture; // TODO THIS IS LEAKY, use array
     }
 
 
