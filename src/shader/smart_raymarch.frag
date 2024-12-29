@@ -23,7 +23,8 @@ float rand(vec2 n) {
 vec4 raymarch() {
     vec4 light = texture(ourTexture, TexCoord);
 
-    if (light.a > 0.1) {
+    // avoid on-line if not base case
+    if (light.a > 0.1 && rayCount == baseRayCount) {
         return light;
     }
     const int maxSteps = 40;
@@ -85,7 +86,7 @@ vec4 raymarch() {
             if (outOfBounds(sampleUv)) break;
 
             // Read if our distance field tells us to!
-            if (dist < minStepSize && rayCount != baseRayCount) {
+            if (dist < minStepSize) {
                 // Accumulate radiance or shadow!
                 vec4 colorSample = texture(ourTexture, sampleUv);
                 radDelta += vec4(pow(colorSample.rgb, vec3(srgb)), 1.0);
@@ -112,8 +113,9 @@ vec4 raymarch() {
 
         vec2 offset = (probeRelativePosition + 0.5) / sqrtBase;
         vec2 upperUv = (upperPosition + offset) / resolution;
-
-        radDelta += texture(lastTexture, upperUv);
+        // if (texture(lastTexture, upperUv).a > 0.99) {
+          radDelta += texture(lastTexture, upperUv);
+        // }
       }
 
         // Accumulate total radiance
@@ -123,7 +125,7 @@ vec4 raymarch() {
     vec3 final = radiance.rgb * oneOverRayCount;
     vec3 correctSRGB = pow(final, vec3(srgb));
 
-    return vec4(correctSRGB, 1.0);
+    return vec4(final.rgb, 1.0);
 }
 
 

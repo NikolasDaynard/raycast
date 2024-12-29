@@ -192,7 +192,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
     GLuint original_input_texture = ren_createTexture(); // create texture to read from (input)
     // bind sdl surface to it
-    glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, win.surface->pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
 
     GLuint gi_output_texture2 = ren_createTexture(); 
     GLuint gi_output_texture = ren_createTexture(); 
@@ -206,7 +206,9 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gi_output_texture, 0);
 
     GLuint gi_dead_textures[200];
-    gi_dead_textures[0] = original_input_texture;
+    gi_dead_textures[0] = ren_createTexture();
+    // bind sdl surface to it
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, win.surface->pixels);
 
     // Use the shader program
     glUseProgram(pobject);
@@ -246,7 +248,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glBindFramebuffer(GL_FRAMEBUFFER, 0); // bind screen, and render out final
     glUseProgram(simpleobject);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, gi_output_texture2);
+    glBindTexture(GL_TEXTURE_2D, gi_output_texture2); /// gi_output_texture shouldn't have the drawing line THAT'S THE BUG!!!!!!!!!
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     SDL_GL_SwapWindow(win.window);
