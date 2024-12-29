@@ -46,6 +46,17 @@ vec4 raymarch() {
     float intervalStart = rayCount == baseRayCount ? 0.0 : partial;
     float intervalEnd = rayCount == baseRayCount ? partial : sqrt(2.0);
 
+    float sqrtBase = sqrt(float(baseRayCount));
+    // If our `baseRayCount` is 16, this is 4 on the upper cascade or 1 on the lower.
+    float spacing = rayCount == baseRayCount ? 1.0 : sqrtBase;
+
+    vec2 size = floor(resolution / spacing);
+    vec2 probeRelativePosition = mod(coord, size);
+    vec2 rayPos = floor(coord / size);
+    float baseIndex = float(baseRayCount) * (rayPos.x + (spacing * rayPos.y));
+    vec2 probeCenter = (probeRelativePosition + 0.5) * spacing;
+    vec2 normalizedProbeCenter = probeCenter / resolution;
+
 
     vec4 radiance = vec4(0.0);
 
@@ -58,7 +69,7 @@ vec4 raymarch() {
         vec2 rayDirection = vec2(cos(angle), -sin(angle));
 
         // Start in our decided starting location
-        vec2 sampleUv = effectiveUv + (rayDirection * intervalStart * scale);
+        vec2 sampleUv = normalizedProbeCenter + (rayDirection * intervalStart * scale);
         // Keep track of how far we've gone
         float traveled = intervalStart;
         vec4 radDelta = vec4(0.0);
@@ -74,7 +85,7 @@ vec4 raymarch() {
             if (outOfBounds(sampleUv)) break;
 
             // Read if our distance field tells us to!
-            if (dist < minStepSize) {
+            if (dist < minStepSize && rayCount != baseRayCount) {
                 // Accumulate radiance or shadow!
                 vec4 colorSample = texture(ourTexture, sampleUv);
                 radDelta += vec4(pow(colorSample.rgb, vec3(srgb)), 1.0);
@@ -88,10 +99,21 @@ vec4 raymarch() {
 
 
       // Only merge on non-opaque areas
-      if (rayCount == baseRayCount && radDelta.a < .1) {
-        vec4 upperSample = texture(lastTexture, TexCoord);
+      bool nonOpaque = radDelta.a == 0.0;
+      if (rayCount == baseRayCount && nonOpaque) {
+        // The spacing between probes
+        float upperSpacing = sqrtBase;
+        // Grid of probes
+        vec2 upperSize = floor(resolution / upperSpacing);
+        // Position of _this_ probe
+        vec2 upperPosition = vec2(
+          mod(index, sqrtBase), floor(index / upperSpacing)
+        ) * upperSize;
 
-        radDelta += vec4(pow(upperSample.rgb, vec3(srgb)), upperSample.a);
+        vec2 offset = (probeRelativePosition + 0.5) / sqrtBase;
+        vec2 upperUv = (upperPosition + offset) / resolution;
+
+        radDelta += texture(lastTexture, upperUv);
       }
 
         // Accumulate total radiance

@@ -194,6 +194,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     // bind sdl surface to it
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, win.surface->pixels);
 
+    GLuint gi_output_texture2 = ren_createTexture(); 
     GLuint gi_output_texture = ren_createTexture(); 
 
     glBindTexture(GL_TEXTURE_2D, gi_output_texture);
@@ -203,20 +204,6 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     // set the output buffer texture
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gi_output_texture, 0);
-
-    // Activate texture unit 1 and bind the second texture
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, original_input_texture);
-
-    // Activate texture unit 1 and bind the second texture
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, original_input_texture);
-
-    // Activate texture unit 0 and bind the first texture
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, output_texture);
-
-
 
     GLuint gi_dead_textures[200];
     gi_dead_textures[0] = original_input_texture;
@@ -246,13 +233,20 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         gi_dead_textures[i] = original_input_texture;
         original_input_texture = gi_output_texture; // TODO THIS IS LEAKY, use array
+
+        glBindTexture(GL_TEXTURE_2D, gi_output_texture2);
+        glTexImage2D(GL_TEXTURE_2D, 0, Mode, win.surface->w, win.surface->h, 0, Mode, GL_UNSIGNED_BYTE, NULL);
+        
+        // set the output buffer texture
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gi_output_texture2, 0);
     }
+    // for some reason the first renderpass is leaving lines on the render, from orig input tex?
 
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0); // bind screen, and render out final
     glUseProgram(simpleobject);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, gi_output_texture);
+    glBindTexture(GL_TEXTURE_2D, gi_output_texture2);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     SDL_GL_SwapWindow(win.window);
@@ -260,7 +254,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 
     // gi_output_texture implicitly freed via original_input_texture
-    glDeleteTextures(4, (GLuint[]){input_texture, original_input_texture, output_texture});
+    glDeleteTextures(5, (GLuint[]){input_texture, original_input_texture, output_texture, gi_output_texture2});
 
     glDeleteTextures(NUM_PASSES - 2, gi_dead_textures);
     glDeleteTextures(NUM_PASSES - 2, input_dead_textures);
