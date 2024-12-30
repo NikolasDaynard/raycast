@@ -213,7 +213,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     // Use the shader program
     glUseProgram(pobject);
 
-    const int BASE_RAY_COUNT = 8;
+    const int BASE_RAY_COUNT = 16;
 
     glUniform1i(glGetUniformLocation(pobject, "baseRayCount"), BASE_RAY_COUNT);
     glUniform2f(glGetUniformLocation(pobject, "resolution"), WINDOW_WIDTH, WINDOW_HEIGHT);  
@@ -247,7 +247,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     glBindFramebuffer(GL_FRAMEBUFFER, 0); // bind screen, and render out final
     glUseProgram(simpleobject);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, gi_output_texture); /// gi_output_texture isn't 4x4 !!! THAT'S THE BUG!!
+    glBindTexture(GL_TEXTURE_2D, gi_output_texture2); /// gi_output_texture isn't 4x4 !!! THAT'S THE BUG!!
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     SDL_GL_SwapWindow(win.window);
