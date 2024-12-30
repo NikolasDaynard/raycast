@@ -65,7 +65,7 @@ vec4 raymarch() {
 
     for(int i = 0; i < rayCount; i++) {
 
-        float index = float(i);
+        float index = baseIndex + float(i);
         // Add 0.5 radians to avoid vertical angles
         float angleStep = (index + 0.5);
         float angle = angleStep * angleStepSize;
@@ -88,10 +88,10 @@ vec4 raymarch() {
             if (outOfBounds(sampleUv)) break;
 
             // Read if our distance field tells us to!
-            if (dist < minStepSize) {
+            if (dist <= minStepSize) {
                 // Accumulate radiance or shadow!
                 vec4 colorSample = texture(ourTexture, sampleUv);
-                radDelta += vec4(pow(colorSample.rgb, vec3(srgb)), 1.0);
+                radDelta += vec4(pow(colorSample.rgb, vec3(srgb)), colorSample.a);
                 break;
             }
 
