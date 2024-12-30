@@ -29,7 +29,7 @@ vec4 raymarch() {
         return light;
       }
     }
-    const int maxSteps = 40;
+    const int maxSteps = 32;
     const float PI = 3.14159265;
     const float TAU = 2.0 * PI;
     const float minStepSize = .001;
